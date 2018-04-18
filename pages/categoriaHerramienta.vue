@@ -45,7 +45,7 @@
     <!-- Termino Dialog Eliminar Tipo-->
   <!-- Dialog Agregar Tipo -->
     <v-dialog v-model="dialogAdd" max-width="500px">
-      <v-btn dark color="primary"  slot="activator" >Agregar Categoria</v-btn>
+      <v-btn dark color="primary"  slot="activator" >Agregar Categoría</v-btn>
             <v-form @submit.prevent="agregarCategoriaH" v-model="valid" ref="fAgregarCategoriaH" lazy-validation>
       <v-card>
         <v-card-title>
