@@ -239,7 +239,7 @@
              <v-flex xs12>
         <v-expansion-panel focusable>
       <v-expansion-panel-content  v-for="(Item,i) in 1" :key="i">
-        <div slot="header"><h4>Información de la orden de compra</h4></div>
+        <div slot="header"><h4>Información de la Orden de Compra</h4></div>
         <v-list dense>
 
             <v-list-tile class="hoverMouse">
