@@ -177,8 +177,6 @@
         <form @submit.prevent="">
       <v-card>
 
-      </v-flex>
-      <v-card>
           <v-card-title><h1> Detalle de Proveedor Nacional </h1></v-card-title>
           <v-divider></v-divider>
 
@@ -236,10 +234,7 @@
              </v-flex>
 
           </v-list>
-        </v-card>
-            </v-layout>
-          </v-container>
-        </v-card-text>
+      
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" flat @click.native="cerrarModalDetail">Cerrar</v-btn>
@@ -247,6 +242,7 @@
       </v-card>
        </form>
     </v-dialog>
+    
     <v-dialog v-model="dialog3" max-width="500px">
             <v-form @submit.prevent="agregarMarca" v-model="valid" ref="fagregarMarca" lazy-validation>
       <v-card>

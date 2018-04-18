@@ -198,9 +198,7 @@
        <v-dialog v-model="dialogDetail" max-width="500px">
         <form @submit.prevent="">
       <v-card>
-       
-      </v-flex>               
-      <v-card>
+     
           <v-card-title><h1> Detalle de Insumo</h1></v-card-title>
           <v-divider></v-divider>
           <v-list dense >
@@ -245,11 +243,7 @@
               <v-list-tile-title>{{ detailItem.id_unidad_medida.medida }}</v-list-tile-title>
             </v-list-tile>
           </v-list>
-           </v-list>
-        </v-card>
-            </v-layout>
-          </v-container>
-        </v-card-text>
+      
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" flat @click.native="cerrarModalDetail">Cerrar</v-btn>

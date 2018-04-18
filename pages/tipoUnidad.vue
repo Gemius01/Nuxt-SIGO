@@ -71,7 +71,7 @@
     <!-- Fin Dialog Agregar Unidad -->
     <!-- Dialog Editar Unidad -->
        <v-dialog v-model="dialogEdit" max-width="500px">
-        <v-form @submit.prevent="editUnidad" ref"fEditarUnidad">
+        <form @submit.prevent="editUnidad">
       <v-card>
         <v-card-title>
           <span class="headline">Editar Unidad</span>
@@ -95,30 +95,34 @@
           <v-btn color="blue darken-1" type="submit" flat>Guardar</v-btn>
         </v-card-actions>
       </v-card>
-    </v-form>
+       </form>
     </v-dialog>
     <!-- Fin Dialog Editar Unidad -->
     <!-- Dialog Detalle Unidad -->
-       <v-dialog v-model="dialogDetail" max-width="500px">
-        <form @submit.prevent="editUnidad">
+        <v-dialog v-model="dialogDetail" max-width="500px">
+        <form @submit.prevent="">
       <v-card>
-        <v-card-title>
-          <span class="headline">Detalle Unidad</span>
-        </v-card-title>
-        <v-card-text>
-          <v-container grid-list-md>
-            <v-layout wrap>
-            <v-flex xs12>
-          <v-card dark color="primary">
-            <v-card-text class="px-0" v-model="detailItem.id" style="text-align:center;">ID : {{detailItem.id}}</v-card-text>
-          </v-card>
-        </v-flex>
-         <v-flex xs12>
-          <v-card dark color="primary">
-            <v-card-text class="px-0" v-model="detailItem.nombre" style="text-align:center;">nombre : {{detailItem.nombre}}</v-card-text>
-          </v-card>
-        </v-flex>
+       
+      </v-flex>               
+      <v-card>
+          <v-card-title><h1> Detalle de Unidad </h1></v-card-title>
+          <v-divider></v-divider>
 
+          <v-list dense >
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>ID Unidad</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Nombre Unidad</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.nombre }}</v-list-tile-title>
+            </v-list-tile>
+           </v-list>
+           
+          </v-list>
+        </v-card>
             </v-layout>
           </v-container>
         </v-card-text>
@@ -188,11 +192,10 @@
 <script>
   import axios from 'axios' // Modulo para realizar las peticiones
   import config from '../config.vue'
-  import validaciones from '../validaciones.vue'
   export default {
     components: { config },
     data: () => ({
-      textoRules: validaciones.textoRules,
+      textoRules: [(v) => !!v || 'Campo vacío', v => (v && v.length <= 20) || 'Máximo de caracteres'],
       dialogAdd: false, // prop para abrir y cerrar modal de Agregar Unidad
       dialogEdit: false, // prop para abrir y cerrar modal de Editar Unidad
       dialogDetail: false, // prop para abrir y cerrar modal de Detalle Unidad
@@ -269,17 +272,14 @@
       },
       agregarUnidad (e) { // función para agregar un nuevo Unidad
         var Unidad = e.target.elements.nombreUnidad.value
-        if (this.$refs.fAgregarUnidad.validate()) {
-          axios.post(config.API_LOCATION + '/bodega/tipo_unidad/', { // petición POST a Unidad para agregar
-            nombre: '' + Unidad + ''
+        axios.post(config.API_LOCATION + '/bodega/tipo_unidad/', { // petición POST a Unidad para agregar
+          nombre: '' + Unidad + ''
+        })
+          .then((response) => {
+            this.items.push(response.data) // push al array de items
+            this.dialogAdd = false // cerrar el modal
+            this.snackbar = true
           })
-            .then((response) => {
-              this.items.push(response.data) // push al array de items
-              this.dialogAdd = false // cerrar el modal
-              this.$refs.fAgregarUnidad.reset()
-              this.snackbar = true
-            })
-        }
       },
       modalEdit (item) { // funcion para llenar los items
         this.editedIndex = this.items.indexOf(item) // obtener posición del array
@@ -289,19 +289,16 @@
       editUnidad (e) { // función para editar el Unidad
         var id = e.target.elements.idEdit.value // obtener id del objeto que se desea editar formulario
         var nombre = e.target.elements.nombreEdit.value // obtener nombre del objeto que se desea editar formulario
-        console.log('entro')
-        if (this.$refs.fEditarUnidad.validate()) {
-          axios.put(config.API_LOCATION + '/bodega/tipo_unidad/' + id + '', {// petición put para editar el Unidad
-            nombre: '' + nombre + ''
+        axios.put(config.API_LOCATION + '/bodega/tipo_unidad/' + id + '', {// petición put para editar el Unidad
+          nombre: '' + nombre + ''
+        })
+          .then(response => {
+            Object.assign(this.items[this.editedIndex], this.editedItem) // eliminar objeto del array items
+            this.dialogEdit = false // cerrar modal
           })
-            .then(response => {
-              Object.assign(this.items[this.editedIndex], this.editedItem) // eliminar objeto del array items
-              this.dialogEdit = false // cerrar modal
-            })
-            .catch(function (error) {
-              console.log(error)
-            })
-        }
+          .catch(function (error) {
+            console.log(error)
+          })
       },
       modalDelete (item) { // función para editar el Unidad
         this.deleteIndex = this.items.indexOf(item) // obtener posición del array

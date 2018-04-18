@@ -106,44 +106,49 @@
     <!-- Fin Dialog Devolver Prestamo -->
     <!-- Dialog Detalle Prestamo -->
        <v-dialog v-model="dialogDetail" max-width="500px">
+        <form @submit.prevent="">
       <v-card>
-        <v-card-title>
-          <span class="headline">Detalle Prestamo</span>
-        </v-card-title>
-        <v-card-text>
-          <v-container grid-list-md>
-            <v-layout wrap>
-         <v-flex xs6>
-          <v-card dark color="primary">
-            <v-card-text class="px-0" v-model="detailItem.rut_proveedor.rut" style="text-align:center;">Proveedor : {{detailItem.rut_proveedor.rut}}</v-card-text>
-          </v-card>
-        </v-flex>
-         <v-flex xs6>
-          <v-card dark color="primary">
-            <v-card-text class="px-0" v-model="detailItem.rut_proveedor.nombre" style="text-align:center;">Nombre : {{detailItem.rut_proveedor.nombre}}</v-card-text>
-          </v-card>
-        </v-flex>
-        <v-flex xs6>
-          <v-card dark color="primary">
-            <v-card-text class="px-0" v-model="detailItem.rut_proveedor.representante" style="text-align:center;">Representante : {{detailItem.rut_proveedor.representante}}</v-card-text>
-          </v-card>
-        </v-flex>
-        <v-flex xs6>
-          <v-card dark color="primary">
-            <v-card-text class="px-0" v-model="detailItem.fecha" style="text-align:center;">Fecha : {{detailItem.fecha}}</v-card-text>
-          </v-card>
-        </v-flex>
-                <v-flex xs12>
-          <v-card dark color="primary">
-            <v-card-text class="px-0" v-model="detailItem.rut_proveedor.fono" style="text-align:center;">Fono : {{detailItem.rut_proveedor.fono}}</v-card-text>
-          </v-card>
-        </v-flex>
-        <v-flex xs12>
-          <v-card dark color="primary">
-            <v-card-text class="px-0" v-model="detailItem.rut_proveedor.fono" style="text-align:center;">Total Neto : {{detailItem.total_neto}}</v-card-text>
-          </v-card>
-        </v-flex>
-        <v-flex xs12>
+
+          <v-card-title><h1> Detalle de la Cotización </h1></v-card-title>
+          <v-divider></v-divider>
+
+          <v-list dense >
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Nombre Proveedor</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.rut_proveedor.rut }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Rut Proveedor</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.rut_proveedor.nombre }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Representante</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.rut_proveedor.representante }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Fecha</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.fecha }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Telefono</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.rut_proveedor.fono }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Total Neto</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.total_neto }}</v-list-tile-title>
+            </v-list-tile>
+             <v-list-tile class="hoverMouse">
+              <v-list-tile-title><h4>Item/s :</h4></v-list-tile-title>
+              <v-list-tile-title class="text-lg-center"></v-list-tile-title>
+              <v-list-tile-title></v-list-tile-title>
+            </v-list-tile>
+             <v-flex xs12>
         <v-expansion-panel focusable>
       <v-expansion-panel-content v-for="item in this.itemPrestado">
         <div slot="header">Item : {{ item.id_item.nombre }}</div>
@@ -153,16 +158,14 @@
       </v-expansion-panel-content>
     </v-expansion-panel>
         </v-flex>
-        
-              
-            </v-layout>
-          </v-container>
-        </v-card-text>
+
+       </v-list>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" flat @click.native="cerrarModalDetail">Cerrar</v-btn>
         </v-card-actions>
       </v-card>
+       </form>
     </v-dialog>
     <!-- Fin Dialog Detalle Prestamo -->
     <!-- Tabla -->

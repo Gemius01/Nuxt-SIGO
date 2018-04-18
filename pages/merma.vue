@@ -172,56 +172,76 @@
     </v-dialog>
     <!-- Fin Dialog Editar Merma -->
     <!-- Dialog Detalle Merma -->
-       <v-dialog v-model="dialogDetail" max-width="500px">
-        <form>
+      <v-dialog v-model="dialogDetail" max-width="500px">
       <v-card>
-        <v-card-title>
-          <span class="headline">Detalle Merma</span>
-        </v-card-title>
-        <v-card-text>
-          <v-container grid-list-md>
-            <v-layout wrap>
-            <v-flex xs12>
-        </v-flex>
-         <v-flex xs12>
-          <v-card dark color="primary">
-            <v-card-text class="px-0" v-model="detailItem.fecha" style="text-align:center;">Fecha : {{detailItem.fecha}}</v-card-text>
-          </v-card>
-        </v-flex>
-        <v-flex xs12>
-         <v-card dark color="primary">
-           <v-card-text class="px-0" v-model="detailItem.motivo" style="text-align:center;">Motivo : {{detailItem.motivo}}</v-card-text>
-         </v-card>
-       </v-flex>
-       <v-flex xs12>
-        <v-card dark color="primary">
-          <v-card-text class="px-0" v-model="detailItem.responsable" style="text-align:center;">Responsable : {{detailItem.responsable}}</v-card-text>
-        </v-card>
-      </v-flex>
-      <v-flex xs12>
-       <v-card dark color="primary">
-         <v-card-text class="px-0" v-model="detailItem.cantidad" style="text-align:center;">Cantidad : {{detailItem.cantidad}}</v-card-text>
-       </v-card>
-     </v-flex>
+         <v-card-title><h1> Detalle de Merma </h1></v-card-title>
+          <v-divider></v-divider>
+
+        <v-list dense >
+        <v-list-tile class="hoverMouse">
+              <v-list-tile-title>ID</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.fecha }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Fecha</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.motivo }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>N° Factura</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.responsable }}</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+  
       <v-expansion-panel>
       <v-expansion-panel-content v-for="(Item,i) in 1" :key="i">
         <div slot="header">Item</div>
-            <v-card-text class="light-green lighten-3">Nombre : {{detailItem.id_item.nombre}} <br> Marca : {{detailItem.id_item.id_marca.nombre}}
-            <br> Modelo : {{detailItem.id_item.modelo}} <br> Stock : {{detailItem.id_item.stock}} <br> Unidad de medida : {{detailItem.id_item.id_unidad_medida.medida}}
-            <br> Subcategoria : {{detailItem.id_item.id_subcategoria.nombre}}</v-card-text>
-      </v-expansion-panel-content>
+        <v-list dense>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Nombre</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id_item.nombre }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Marca</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id_item.id_marca.nombre }}</v-list-tile-title>
+            </v-list-tile>
+             <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Modelo</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id_item.modelo }}</v-list-tile-title>
+            </v-list-tile>
+             <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Stock</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id_item.stock }}</v-list-tile-title>
+            </v-list-tile>
+
+            <v-list-tile class="hoverMouse">
+                <v-list-tile-title>Medida</v-list-tile-title>
+                <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+                <v-list-tile-title>{{ detailItem.id_item.id_unidad_medida.medida }}</v-list-tile-title>
+              </v-list-tile>
+
+            <v-list-tile class="hoverMouse">
+                <v-list-tile-title>Subcategoria</v-list-tile-title>
+                <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+                <v-list-tile-title>{{ detailItem.id_item.id_subcategoria.nombre }}</v-list-tile-title>
+              </v-list-tile>
+
+            </v-list>
+    </v-expansion-panel-content>
     </v-expansion-panel>
 
-
-            </v-layout>
-          </v-container>
-        </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" flat @click.native="cerrarModalDetail">Cerrar</v-btn>
         </v-card-actions>
       </v-card>
-       </form>
+
     </v-dialog>
     <!-- Fin Dialog Editar Merma -->
     <!-- Tabla -->

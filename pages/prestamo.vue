@@ -261,8 +261,6 @@
     </v-expansion-panel>
         </v-flex>
           </v-list>
-           </v-list>
-
 
       <v-card-actions>
           <v-spacer></v-spacer>
@@ -277,9 +275,7 @@
       <v-dialog v-model="dialogDetail" max-width="500px">
         <form @submit.prevent="">
       <v-card>
-       
-      </v-flex>               
-      <v-card>
+
           <v-card-title><h1> Detalle de Salida</h1></v-card-title>
           <v-divider></v-divider>
           <v-list dense >
@@ -319,11 +315,7 @@
     </v-expansion-panel>
         </v-flex>
           </v-list>
-           </v-list>
-        </v-card>
-            </v-layout>
-          </v-container>
-        </v-card-text>
+     
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" flat @click.native="cerrarModalDetail">Cerrar</v-btn>

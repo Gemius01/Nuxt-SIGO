@@ -100,10 +100,7 @@
     <!-- Fin Dialog Editar Tipo -->
     <!-- Dialog Detalle Tipo -->
        <v-dialog v-model="dialogDetail" max-width="500px">
-        <form @submit.prevent="">
-      <v-card>
-       
-      </v-flex>               
+        <form @submit.prevent="">              
       <v-card>
           <v-card-title><h1> Detalle de Categoría Insumos </h1></v-card-title>
           <v-divider></v-divider>
@@ -120,12 +117,7 @@
               <v-list-tile-title>{{ detailItem.nombre }}</v-list-tile-title>
             </v-list-tile>
            </v-list>
-           
-          </v-list>
-        </v-card>
-            </v-layout>
-          </v-container>
-        </v-card-text>
+
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" flat @click.native="cerrarModalDetail">Cerrar</v-btn>

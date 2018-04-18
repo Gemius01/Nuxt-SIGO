@@ -176,9 +176,6 @@
        <v-dialog v-model="dialogDetail" max-width="500px">
         <form @submit.prevent="">
       <v-card>
-
-      </v-flex>
-      <v-card>
           <v-card-title><h1> Detalle de Proveedor Extranjero </h1></v-card-title>
           <v-divider></v-divider>
 
@@ -227,7 +224,7 @@
              <v-flex xs12>
              <v-expansion-panel focusable>
            <v-expansion-panel-content v-for="(item,i) in 1">
-             <div slot="header">Giro : </div>
+             <div slot="header"><h4>Giro/s :</h4></div>
              <v-card>
                <v-card-text class="light-green lighten-3" v-for="giro in giros">{{giro.id_giro.id}} : {{ giro.id_giro.nombre }}</v-card-text>
              </v-card>
@@ -236,17 +233,17 @@
              </v-flex>
 
           </v-list>
-        </v-card>
-            </v-layout>
-          </v-container>
-        </v-card-text>
+       
+           
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" flat @click.native="cerrarModalDetail">Cerrar</v-btn>
         </v-card-actions>
-      </v-card>
+   </v-card>
        </form>
     </v-dialog>
+
+
     <v-dialog v-model="dialog3" max-width="500px">
             <v-form @submit.prevent="agregarMarca" v-model="valid" ref="fagregarMarca" lazy-validation>
       <v-card>

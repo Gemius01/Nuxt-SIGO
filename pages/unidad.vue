@@ -105,23 +105,20 @@
         <v-card-title>
           <span class="headline">Detalle Unidad</span>
         </v-card-title>
-        <v-card-text>
-          <v-container grid-list-md>
-            <v-layout wrap>
-            <v-flex xs12>
-          <v-card dark color="primary">
-            <v-card-text class="px-0" v-model="detailItem.id" style="text-align:center;">ID : {{detailItem.id}}</v-card-text>
-          </v-card>
-        </v-flex>
-         <v-flex xs12>
-          <v-card dark color="primary">
-            <v-card-text class="px-0" v-model="detailItem.medida" style="text-align:center;">medida : {{detailItem.medida}}</v-card-text>
-          </v-card>
-        </v-flex>
+        <v-list dense >
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>ID</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Nombre Unidad</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.medida }}</v-list-tile-title>
+            </v-list-tile>
 
-            </v-layout>
-          </v-container>
-        </v-card-text>
+           </v-list>
+           
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" flat @click.native="cerrarModalDetail">Cerrar</v-btn>

@@ -217,6 +217,203 @@
       </v-form>
     </v-dialog>
     <!-- Fin Dialog Realizar Recepción En Un Registro -->
+     <v-dialog v-model="dialogDetail" max-width="550px">
+        <form @submit.prevent="">
+      <v-card>
+
+          <v-card-title><h1> Detalle de Compra </h1></v-card-title>
+          <v-divider></v-divider>
+          <v-list dense >
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>ID</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Fecha</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.fecha }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Hora</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.hora }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Observaciones</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.observaciones }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>ID Compra</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id_compra.id }}</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+<v-expansion-panel focusable>
+      <v-expansion-panel-content  v-for="(Item,i) in 1" :key="i">
+        <div slot="header"><h4>Información de la Compra</h4></div>
+          <v-list dense >
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Fecha</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id_compra.fecha }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>N° Factura</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id_compra.numFactura }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>ID Orden de Compra</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id_compra.id_orden_compra.id }}</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+            </v-expansion-panel-content>
+    </v-expansion-panel>
+             <v-flex xs12>
+        <v-expansion-panel focusable>
+      <v-expansion-panel-content  v-for="(Item,i) in 1" :key="i">
+        <div slot="header"><h4>Información de la orden de compra</h4></div>
+        <v-list dense>
+
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Id Orden</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id_compra.id_orden_compra.id }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Fecha</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id_compra.id_orden_compra.fecha }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Id Cotización</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id_compra.id_orden_compra.id_cotizacion.id }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Cotizable</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id_compra.id_orden_compra.cotizable }}</v-list-tile-title>
+            </v-list-tile>
+</v-list>
+      </v-expansion-panel-content>
+    </v-expansion-panel>
+        </v-flex>
+         <v-flex xs12>
+        <v-expansion-panel focusable>
+      <v-expansion-panel-content  v-for="(Item,i) in 1" :key="i">
+        <div slot="header"><h4>Información de la Cotizacion </h4></div>
+            <v-list dense>
+             <v-list-tile class="hoverMouse">
+              <v-list-tile-title>ID</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id_compra.id_orden_compra.id_cotizacion.id }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Fecha</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id_compra.id_orden_compra.id_cotizacion.fecha }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Rut Proveedor</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id_compra.id_orden_compra.id_cotizacion.rut_proveedor.rut }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Orden de compra</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id_compra.id_orden_compra.id_cotizacion.orden_compra }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Incompleta</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id_compra.id_orden_compra.id_cotizacion.incompleta }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title></v-list-tile-title>
+              <v-list-tile-title class="text-lg-center"><h4>Total Neto:</h4></v-list-tile-title>
+              <v-list-tile-title><h4>{{ detailItem.id_compra.id_orden_compra.id_cotizacion.total_neto }}</h4></v-list-tile-title>
+            </v-list-tile>
+            
+</v-list>
+
+      </v-expansion-panel-content>
+    </v-expansion-panel>
+        </v-flex>
+         <v-flex xs12 class="hoverMouse">
+        <v-expansion-panel focusable>
+      <v-expansion-panel-content  v-for="(Item,i) in 1" :key="i">
+        <div slot="header"><h4>Información del Proveedor</h4></div>
+  <v-list dense>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Rut</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id_compra.id_orden_compra.id_cotizacion.rut_proveedor.rut }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Nombre</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id_compra.id_orden_compra.id_cotizacion.rut_proveedor.nombre }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Representante</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id_compra.id_orden_compra.id_cotizacion.rut_proveedor.representante }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+            <v-list-tile-title>Ciudad</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id_compra.id_orden_compra.id_cotizacion.rut_proveedor.direccion }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Ciudad</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id_compra.id_orden_compra.id_cotizacion.rut_proveedor.id_ciudad.nombre }}, {{ detailItem.id_compra.id_orden_compra.id_cotizacion.rut_proveedor.id_ciudad.id_region.nombre }}, {{ detailItem.id_compra.id_orden_compra.id_cotizacion.rut_proveedor.id_ciudad.id_region.id_pais.nombre }} </v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Teléfono</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id_compra.id_orden_compra.id_cotizacion.rut_proveedor.fono }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Movil</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id_compra.id_orden_compra.id_cotizacion.rut_proveedor.movil }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Email</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id_compra.id_orden_compra.id_cotizacion.rut_proveedor.email }}</v-list-tile-title>
+            </v-list-tile>
+</v-list>
+
+      </v-expansion-panel-content>
+    </v-expansion-panel>
+        </v-flex>
+        <v-list dense>
+
+        <v-list-tile class="h4">
+              <v-list-tile-title><h4>TOTAL NETO</h4></v-list-tile-title>
+              <v-list-tile-title class="h4">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id_compra.total_neto}}</v-list-tile-title>
+            </v-list-tile>
+        
+           
+          </v-list>
+        
+         
+        
+      
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" flat @click.native="cerrarModalDetail">Cerrar</v-btn>
+        </v-card-actions>
+   </v-card>
+       </form>
+    </v-dialog>
     <!-- Tabla -->
     <v-card>
     <v-card-title>
@@ -245,9 +442,15 @@
         <td class="text-xs-center">{{ props.item.id_compra.id }}</td>
         <td class="text-xs-center">{{ props.item.fecha_update }}</td>
         <td class="justify-center layout px-0">
+          <v-tooltip top>
+          <v-btn icon slot="activator" class="mx-0" @click="modalDetalle(props.item)" >
+            <v-icon color="blue">search</v-icon>
+          </v-btn>
+          <span>Detalle</span>
+          </v-tooltip>
         <v-tooltip top>
           <v-btn icon slot="activator" class="mx-0" @click="modalRecepcion(props.item)" >
-            <v-icon color="blue">search</v-icon>
+            <v-icon color="blue">edit</v-icon>
           </v-btn>
           <span>Detalle</span>
           </v-tooltip>
@@ -367,29 +570,49 @@
       detailItem: {
         id: 0,
         fecha: '',
-        rut_proveedor: {
-          rut: '',
-          nombre: '',
-          representante: '',
-          direccion: '',
-          id_ciudad: {
+        hora: '',
+        observaciones: '',
+        id_compra: {
+          id: 0,
+          fecha: '',
+          numFactura: 0,
+          id_orden_compra: {
             id: 0,
-            nombre: '',
-            id_region: {
+            fecha: '',
+            id_cotizacion: {
               id: 0,
-              nombre: '',
-              id_pais: {
-                id: 0,
-                nombre: ''
-              }
-            }
+              fecha: '',
+              rut_proveedor: {
+                rut: '',
+                nombre: '',
+                representante: '',
+                direccion: '',
+                id_ciudad: {
+                  id: 0,
+                  nombre: '',
+                  id_region: {
+                    id: 0,
+                    nombre: '',
+                    id_pais: {
+                      id: 0,
+                      nombre: ''
+                    }
+                  }
+                },
+                fono: '',
+                movil: '',
+                email: '',
+                nacional: ''
+              },
+              total_neto: 0,
+              orden_compra: 0,
+              incompleta: ''
+            },
+            cotizable: ''
           },
-          fono: '',
-          movil: '',
-          email: '',
-          nacional: false
+          total_neto: 0
         },
-        total_neto: 0
+        fecha_update: ''
       },
       itemsOrden: []
     }),
@@ -634,6 +857,11 @@
           })
         this.dialogRecepcionUnica = true
       },
+      modalDetalle (item) {
+        this.detailItem = this.items.indexOf(item) // obtener posición del array
+        this.detailItem = Object.assign({}, item)
+        this.dialogDetail = true
+      },
       modalAsignar (item) {
         this.ordenCompraSelected = item
         axios.get(config.API_LOCATION + '/bodega/cotizacion/' + item.id + '/orden_compra') // petición GET para traer todas las cotizaciones que posean la id compra asignada al abrir el modal
@@ -703,4 +931,10 @@
     border-radius: 4px;
     margin-bottom: 0%;
   }
+    .hoverMouse:hover{
+    background-color: #D5CFCF;
+  }
+    .h4:hover{
+      background-color: #E74C3C;
+    }
 </style>
