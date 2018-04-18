@@ -145,35 +145,34 @@
     </v-dialog>
     <!-- Fin Dialog Editar Subcategoria -->
     <!-- Dialog Detalle Subcategoria -->
-       <v-dialog v-model="dialogDetail" max-width="500px">
+        <v-dialog v-model="dialogDetail" max-width="500px">
+        <form @submit.prevent="">
       <v-card>
-        <v-card-title>
-          <span class="headline">Detalle Subcategoria</span>
-        </v-card-title>
-        <v-card-text>
-          <v-container grid-list-md>
-            <v-layout wrap>
-            <v-flex xs12>
-          <v-card dark color="primary">
-            <v-card-text class="px-0" v-model="detailItem.id" style="text-align:center;">ID : {{detailItem.id}}</v-card-text>
-          </v-card>
-        </v-flex>
-         <v-flex xs12>
-          <v-card dark color="primary">
-            <v-card-text class="px-0" v-model="detailItem.nombre" style="text-align:center;">Nombre : {{detailItem.nombre}}</v-card-text>
-          </v-card>
-        </v-flex>
-         <v-flex xs12>
-          <v-card dark color="primary">
-            <v-card-text class="px-0" v-model="detailItem.categoria" style="text-align:center;">Categoría : {{detailItem.categoria}}</v-card-text>
-          </v-card>
-        </v-flex>
-        <v-flex xs12>
-          <v-card dark color="primary">
-            <v-card-text class="px-0" v-model="detailItem.id_categoria" style="text-align:center;">ID_Categoria : {{detailItem.id_categoria}}</v-card-text>
-          </v-card>
-        </v-flex>
-              
+       
+      </v-flex>               
+      <v-card>
+  
+          <v-card-title><h1> Detalle de Subcategoria</h1></v-card-title>
+          <v-divider></v-divider>
+          <v-list dense >
+              <v-list-tile class="hoverMouse">
+              <v-list-tile-title>ID</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Nombre</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.nombre }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Categoria</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id_categoria.nombre }}</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+           </v-list>
+        </v-card>
             </v-layout>
           </v-container>
         </v-card-text>
@@ -182,7 +181,8 @@
           <v-btn color="blue darken-1" flat @click.native="cerrarModalDetail">Cerrar</v-btn>
         </v-card-actions>
       </v-card>
-    </v-dialog>
+       </form>
+     </v-dialog>
     <!-- Fin Dialog Editar Subcategoria -->
     <!-- Tabla -->
     <v-card>

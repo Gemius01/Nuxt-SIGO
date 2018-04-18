@@ -99,26 +99,30 @@
     </v-dialog>
     <!-- Fin Dialog Editar Tipo -->
     <!-- Dialog Detalle Tipo -->
-       <v-dialog v-model="dialogDetail" max-width="500px">
-        <form @submit.prevent="editCategoriaH">
+      <v-dialog v-model="dialogDetail" max-width="500px">
+        <form @submit.prevent="">
       <v-card>
-        <v-card-title>
-          <span class="headline">Detalle Tipo</span>
-        </v-card-title>
-        <v-card-text>
-          <v-container grid-list-md>
-            <v-layout wrap>
-            <v-flex xs12>
-          <v-card dark color="primary">
-            <v-card-text class="px-0" v-model="detailItem.id" style="text-align:center;">ID : {{detailItem.id}}</v-card-text>
-          </v-card>
-        </v-flex>
-         <v-flex xs12>
-          <v-card dark color="primary">
-            <v-card-text class="px-0" v-model="detailItem.nombre" style="text-align:center;">Nombre : {{detailItem.nombre}}</v-card-text>
-          </v-card>
-        </v-flex>
+       
+      </v-flex>               
+      <v-card>
+          <v-card-title><h1> Detalle de Categoría Herramienta </h1></v-card-title>
+          <v-divider></v-divider>
 
+          <v-list dense >
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>ID Categoría</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Nombre Categoría</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.nombre }}</v-list-tile-title>
+            </v-list-tile>
+           </v-list>
+           
+          </v-list>
+        </v-card>
             </v-layout>
           </v-container>
         </v-card-text>

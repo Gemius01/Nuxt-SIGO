@@ -195,30 +195,58 @@
     </v-dialog>
     <!-- Fin Dialog Editar Tipo -->
     <!-- Dialog Detalle Tipo -->
-       <v-dialog v-model="dialogDetail" max-width="500px">
+        <v-dialog v-model="dialogDetail" max-width="500px">
         <form @submit.prevent="">
       <v-card>
-        <v-card-title>
-          <span class="headline">Detalle Tipo</span>
-        </v-card-title>
-        <v-card-text>
-          <v-container grid-list-md>
-            <v-layout wrap>
-            <v-flex xs12>
-          <v-card dark color="primary">
-            <v-card-text class="px-0" v-model="detailItem.id" style="text-align:center;">ID : {{detailItem.id}}</v-card-text>
-          </v-card>
-        </v-flex>
-         <v-flex xs12>
-          <v-card dark color="primary">
-            <v-card-text class="px-0" v-model="detailItem.nombre" style="text-align:center;">Nombre : {{detailItem.nombre}}</v-card-text>
-            <v-card-text class="px-0" v-model="detailItem.id_marca.nombre" style="text-align:center;">Marca : {{detailItem.id_marca.nombre}}</v-card-text>
-            <v-card-text class="px-0" v-model="detailItem.modelo" style="text-align:center;">Modelo : {{detailItem.modelo}}</v-card-text>
-            <v-card-text class="px-0" v-model="detailItem.id_subcategoria.nombre" style="text-align:center;">Subcategoria : {{detailItem.id_subcategoria.nombre}}</v-card-text>
-            <v-card-text class="px-0" v-model="detailItem.id_unidad_medida.medida" style="text-align:center;">Unidad de medidida : {{detailItem.id_unidad_medida.medida}}</v-card-text>
-          </v-card>
-        </v-flex>
-
+       
+      </v-flex>               
+      <v-card>
+          <v-card-title><h1> Detalle de Herramienta</h1></v-card-title>
+          <v-divider></v-divider>
+          <v-list dense >
+              <v-list-tile class="hoverMouse">
+              <v-list-tile-title>ID</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Nombre</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.nombre }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Marca</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id_marca.nombre }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Modelo</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.modelo }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Stock Critico</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.stockCritico }}</v-list-tile-title>
+            </v-list-tile>
+             <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Stock</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.stock }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Subcategoria</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id_subcategoria.nombre }}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile class="hoverMouse">
+              <v-list-tile-title>Unidad de medida</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ detailItem.id_unidad_medida.medida }}</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+           </v-list>
+        </v-card>
             </v-layout>
           </v-container>
         </v-card-text>
@@ -228,7 +256,7 @@
         </v-card-actions>
       </v-card>
        </form>
-    </v-dialog>
+     </v-dialog>
     <!-- Fin Dialog Editar Tipo -->
     <!-- Tabla -->
     <v-card>
