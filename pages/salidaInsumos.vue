@@ -100,7 +100,7 @@
               item-text="nombre"
               :value="selectItem.id"
               v-model="selectItem"
-              @change="changeSelectPrestamo"
+              @change="changeItemSalida"
               search-input
               :rules="[() => !!this.selectItem || 'Campo requerido']"
               :error-messages="errorMessages"
@@ -112,6 +112,9 @@
               </v-flex>
               <v-flex xs6>
               <v-text-field label="Cantidad" type="number" id="cantidad" v-model="addItem.cantidad" required></v-text-field>
+              </v-flex> 
+              <v-flex xs12 class="ordenDesc"  >
+                   <h4>Stock Disponible: </h4><h4 v-model="stockActual">{{ stockActual }}</h4>   
               </v-flex>
             </v-layout>
           </v-container>
@@ -402,6 +405,7 @@
       textoRules: validaciones.textoRules,
       errorMessages: [],
       itemsASalir: [],
+      stockActual: '',
       itemsSelectSalida: [],
       paginationItems: {},
       dialogAdd: false, // prop para abrir y cerrar modal de Agregar Subcategoría
@@ -501,6 +505,14 @@
         axios.get(config.API_LOCATION + `/bodega/salida/`) // petición GET a Subcategoría para traer todos los objetos "Subcategoría" que contengan como tipo insumo
           .then((response) => {
             this.items = response.data
+          })
+          .catch(e => {
+          })
+      },
+      changeItemSalida (e) {
+        axios.get(config.API_LOCATION + '/bodega/item/' + e.id + '')
+          .then((response) => {
+            this.stockActual = response.data.stock
           })
           .catch(e => {
           })

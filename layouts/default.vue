@@ -52,48 +52,6 @@
         style="max-width: 500px; min-width: 128px"
       ></v-text-field>
       <div class="d-flex align-center" style="margin-left: auto">
-        
-        <v-menu offset-y>
-        <v-btn icon slot="activator">
-          <v-icon>insert_chart</v-icon>
-        </v-btn>
-        <v-list dense>
-          <v-menu offset-y open-on-hover>
-            <v-list-tile slot="activator" @click="">
-              <v-list-tile-title>Reportes</v-list-tile-title>
-              <v-list-tile-action class="justify-center">
-                <v-icon>play_arrow</v-icon>
-              </v-list-tile-action>
-            </v-list-tile>
-            <v-list dense>
-              <v-list-tile to="/reporteMayorSolicitante">
-                <v-list-tile-title>Mayor Solicitante</v-list-tile-title>
-              </v-list-tile>
-              <v-list-tile to="/reporteHerramientaCritico">
-                <v-list-tile-title>Herramienta Stock Crítico</v-list-tile-title>
-              </v-list-tile>
-              <v-list-tile to="/reporteInsumoCritico">
-                <v-list-tile-title>Insumo Stock Crítico</v-list-tile-title>
-              </v-list-tile>
-              <v-list-tile to="/reporteInsumoSinStock">
-                <v-list-tile-title>Insumo Sin Stock</v-list-tile-title>
-              </v-list-tile>
-              <v-list-tile to="/reporteHerramientaSinStock">
-                <v-list-tile-title>Herramienta Sin Stock</v-list-tile-title>
-              </v-list-tile>
-              <v-list-tile to="/reporteInventarioHerramienta">
-                <v-list-tile-title>Inventario Herramienta</v-list-tile-title>
-              </v-list-tile>
-              <v-list-tile to="/reporteInventarioInsumo">
-                <v-list-tile-title>Inventario Insumo</v-list-tile-title>
-              </v-list-tile>
-              <v-list-tile to="/reporteHerramientaPrestada">
-                <v-list-tile-title>Herramientas no devueltas</v-list-tile-title>
-              </v-list-tile>
-            </v-list>
-          </v-menu>
-        </v-list>
-      </v-menu>
         <v-btn icon>
           <v-icon>notifications</v-icon>
         </v-btn>
@@ -172,6 +130,21 @@
               { title: 'Proveedor Nacional', to: '/proveedorN' },
               { title: 'Proveedor Extranjero', to: '/proveedorE' },
               { title: 'Registrar Merma', to: '/merma' }
+            ]
+          },
+          {
+            action: 'insert_chart',
+            title: 'Estadísticas',
+            active: false,
+            items: [
+              { title: 'Mayor Solicitante', to: '/reporteMayorSolicitante' },
+              { title: 'Herramienta Stock Crítico', to: '/reporteHerramientaCritico' },
+              { title: 'Insumo Stock Crítico', to: '/reporteInsumoCritico' },
+              { title: 'Insumo Sin Stock', to: '/reporteInsumoSinStock' },
+              { title: 'Herramienta Sin Stock', to: '/reporteHerramientaSinStock' },
+              { title: 'Inventario Herramienta', to: '/reporteInventarioHerramienta' },
+              { title: 'Inventario Insumo', to: '/reporteInventarioInsumo' },
+              { title: 'Herramientas no devueltas', to: '/reporteHerramientaPrestada' },
             ]
           }
         ],
