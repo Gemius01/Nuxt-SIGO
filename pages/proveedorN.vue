@@ -78,32 +78,13 @@
                 <v-select item-value="id" item-text="nombre" :items="ciudadItem" v-model="addItem.id_ciudad.id" label="Ciudad" single-line :rules="[v => this.selectValidado || 'Campo vacío']" v-on:change='onChangeCiudad'
                 ></v-select>
                 </v-flex>
-                <!--
-                <v-flex xs12 sm6 md12>
-                <v-select
-                item-value="id"
-                item-text="nombre"
-                :items="giroItem"
-                :value="addItem.id_giro"
-                v-model="addItem.id_giro"
-                label="Giro"
-                :rules="[v => this.selectValidado2 || 'Campo vacío']"
-                v-on:change='onChangeGiro'
-                single-line
-                ></v-select>
-                </v-flex>
-                
-                <v-flex xs12 id="divItems">
-                <item x12 @clicked="onClickChild" @deleted="itemEliminado"></item>
-                </v-flex>
-              -->
               <v-flex xs12 id="divItems">
             <v-data-table
               :headers="headersItem"
               :items="GirosTabla"
               :search="search"
               must-sort
-              :pagination.sync="paginationItems"
+              :pagination.sync="paginationGiros"
               class="elevation-1"
               >
             <!-- Fin Tabla-->
@@ -111,19 +92,7 @@
               <td class="text-xs-center">{{ props.item.nombre }}</td>
               <td class="justify-center layout px-0">
                 <v-tooltip top>
-                  <v-btn icon slot="activator" class="mx-0" @click="detalleItem(props.item)" >
-                  <v-icon color="blue">search</v-icon>
-                  </v-btn>
-                  <span>Detalle</span>
-                </v-tooltip>
-                <v-tooltip top>
-                  <v-btn icon slot="activator" class="mx-0" @click="editItemModal(props.item)">
-                  <v-icon color="green">edit</v-icon>
-                  </v-btn>
-                  <span>Editar</span>
-                </v-tooltip>
-                <v-tooltip top>
-                  <v-btn icon slot="activator" class="mx-0" @click="eliminarItem(props.item)">
+                  <v-btn icon slot="activator" class="mx-0" @click="eliminarGiroModal(props.item)">
                   <v-icon color="deep-orange darken-1">delete</v-icon>
                   </v-btn>
                   <span>Quitar</span>
@@ -193,6 +162,37 @@
       </v-form>
     </v-dialog>
 <!-- Fin Dialog Agregar Giro Proveedor -->
+ <!-- Dialog Eliminar Giro Proveedor -->
+    <v-dialog v-model="eliminarGiroModalTable" max-width="500px">
+      <v-form @submit.prevent="eliminarGiro" v-model="valid" ref="fagregarMarca" lazy-validation>
+        <v-card>
+        <v-card-title>
+        <span class="headline">¿Estás seguro de quitar el giro?</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container grid-list-md>
+            <v-layout wrap>
+               <v-card>
+                <v-list dense >
+                  <v-list-tile>
+                    <v-flex xs12 style="align:center;">
+                    <h4 class="text-lg-center">{{ deleteItem.nombre }}</h4>
+                  </v-flex>
+                  </v-list-tile>
+                </v-list>
+              </v-card>
+            </v-layout>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="blue darken-1" flat >Cancelar</v-btn>
+        <v-btn color="blue darken-1" type="submit" flat >Quitar</v-btn>
+        </v-card-actions>
+        </v-card>
+      </v-form>
+    </v-dialog>
+<!-- Fin Dialog Eliminar Giro Proveedor -->
     <!-- Dialog Editar Tipo -->
        <v-dialog v-model="dialogEdit" max-width="500px">
         <form @submit.prevent="editProveedor">
@@ -307,7 +307,7 @@
 
              <v-flex xs12>
              <v-expansion-panel focusable>
-           <v-expansion-panel-content v-for="(item,i) in 1">
+           <v-expansion-panel-content v-for="(item,i) in 1" :key="i">
              <div slot="header">Giro : </div>
              <v-card>
                <v-card-text class="light-green lighten-3" v-for="giro in giros">{{giro.id_giro.id}} : {{ giro.id_giro.nombre }}</v-card-text>
@@ -475,6 +475,7 @@
       dialogAdd: false, // prop para abrir y cerrar modal de Agregar Tipo
       dialogEdit: false, // prop para abrir y cerrar modal de Editar Tipo
       dialogDetail: false, // prop para abrir y cerrar modal de Detalle Tipo
+      eliminarGiroModalTable: false,
       agregarGiro: false,
       dialogDelete: false,
       dialog3: false, // prop para abrir y cerrar modal de Delete Tipo
@@ -482,6 +483,7 @@
       pagination: {}, // paginación de la tabla
       editedIndex: -1,
       deleteIndex: -1,
+      paginationGiros: {},
       search: '',
       girosAgregar: [],
       selectSelectGiro: 0,
@@ -629,7 +631,6 @@
         axios.get(config.API_LOCATION + `/bodega/giro/`)// petición GET a Categoria para traer a todos los objetos "categoria"que contengan como tipo "insumo"
           .then((response) => {
             this.giroItem = response.data
-            console.log(this.giroItem)
           })
           .catch(e => {
           })
@@ -671,6 +672,16 @@
             console.log(error)
           })
       },
+      eliminarGiro () {
+        var indexArray = this.GirosTabla.findIndex(x => x.id === this.deleteItem.id)
+        this.GirosTabla.splice(indexArray, 1)
+        this.giroItem.push(this.deleteItem)
+        this.eliminarGiroModalTable = false
+      },
+      eliminarGiroModal (e) {
+        this.deleteItem = e
+        this.eliminarGiroModalTable = true
+      },
       agregarItemPrestado () {
         var html1 = '<item></item>'
         var z = document.createElement('item')
@@ -690,15 +701,6 @@
         var indexArray = this.giroItem.findIndex(x => x.id === this.selectItem.id)
         this.giroItem.splice(indexArray, 1)
         this.agregarGiro = false
-
-        /* selectAgregarGiro
-        var item = this.selectItem
-        var cantidaItem = document.getElementById('cantidad').value
-        this.itemsAPrestar.push({item: item, cantidad: cantidaItem})
-        var indexArray = this.itemsSelectPrestar.findIndex(x => x.id === item.id)
-        this.itemsSelectPrestar.splice(indexArray, 1)
-        this.agregarItem = false
-        */
       },
       agregarProveedorN (e) { // función para agregar un nuevo Tipo
         var rut = this.addItem.rut
