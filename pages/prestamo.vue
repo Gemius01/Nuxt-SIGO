@@ -101,7 +101,7 @@
               item-text="nombre"
               :value="selectItem.id"
               v-model="selectItem"
-              @change="changeSelectPrestamo"
+              @change="changeSelectItem"
               search-input
               :rules="[() => !!this.selectItem || 'Campo requerido']"
               :error-messages="errorMessages"
@@ -113,6 +113,9 @@
               </v-flex>
               <v-flex xs6>
               <v-text-field label="Cantidad" type="number" id="cantidad" v-model="addItem.cantidad" required></v-text-field>
+              </v-flex>
+              <v-flex xs12 class="ordenDesc"  >
+                   <h4>Stock Disponible: </h4><h4 v-model="stockActual">{{ stockActual }}</h4>   
               </v-flex>
             </v-layout>
           </v-container>
@@ -406,6 +409,7 @@
       value: '',
       selectItem: 0,
       search: '',
+      stockActual: '',
       snackbar: false, // SnackBar Open/Close
       color: 'green', // Color de SnackBar
       mode: '', // Modo SnackBar
@@ -478,6 +482,14 @@
         axios.get(config.API_LOCATION + `/bodega/prestamo/valueFalse`)
           .then((response) => {
             this.items = response.data
+          })
+          .catch(e => {
+          })
+      },
+      changeSelectItem (e) {
+        axios.get(config.API_LOCATION + '/bodega/item/' + e.id + '')
+          .then((response) => {
+            this.stockActual = response.data.stock
           })
           .catch(e => {
           })
@@ -640,3 +652,10 @@
     }
   }
 </script>
+<style>
+  .ordenDesc{
+    background-color: orange;
+    border-radius: 3px;
+    text-align: center;
+  }
+</style>

@@ -78,6 +78,7 @@
                 <v-select item-value="id" item-text="nombre" :items="ciudadItem" v-model="addItem.id_ciudad.id" label="Ciudad" single-line :rules="[v => this.selectValidado || 'Campo vacío']" v-on:change='onChangeCiudad'
                 ></v-select>
                 </v-flex>
+                <!--
                 <v-flex xs12 sm6 md12>
                 <v-select
                 item-value="id"
@@ -91,12 +92,56 @@
                 single-line
                 ></v-select>
                 </v-flex>
+                
                 <v-flex xs12 id="divItems">
                 <item x12 @clicked="onClickChild" @deleted="itemEliminado"></item>
                 </v-flex>
-                </v-flex>
-                <v-flex xs12>
-                </v-flex>
+              -->
+              <v-flex xs12 id="divItems">
+            <v-data-table
+              :headers="headersItem"
+              :items="GirosTabla"
+              :search="search"
+              must-sort
+              :pagination.sync="paginationItems"
+              class="elevation-1"
+              >
+            <!-- Fin Tabla-->
+            <template slot="items" slot-scope="props">
+              <td class="text-xs-center">{{ props.item.nombre }}</td>
+              <td class="justify-center layout px-0">
+                <v-tooltip top>
+                  <v-btn icon slot="activator" class="mx-0" @click="detalleItem(props.item)" >
+                  <v-icon color="blue">search</v-icon>
+                  </v-btn>
+                  <span>Detalle</span>
+                </v-tooltip>
+                <v-tooltip top>
+                  <v-btn icon slot="activator" class="mx-0" @click="editItemModal(props.item)">
+                  <v-icon color="green">edit</v-icon>
+                  </v-btn>
+                  <span>Editar</span>
+                </v-tooltip>
+                <v-tooltip top>
+                  <v-btn icon slot="activator" class="mx-0" @click="eliminarItem(props.item)">
+                  <v-icon color="deep-orange darken-1">delete</v-icon>
+                  </v-btn>
+                  <span>Quitar</span>
+                </v-tooltip>
+              </td>
+            </template>
+            <template slot="pageText" slot-scope="{ pageStart, pageStop }">
+            De {{ pageStart }} a {{ pageStop }}
+            </template>
+            </v-data-table>
+          <v-flex xs12 >
+          <v-btn block dark color="primary" @click="agregarGiroModal">
+          AGREGAR GIRO
+          </v-btn>
+          </v-flex>
+          </v-flex>
+
+                
             </v-layout>
           </v-container>
         </v-card-text>
@@ -110,6 +155,44 @@
       </v-form>
     </v-dialog>
     <!-- Fin Dialog Agregar Tipo -->
+     <!-- Dialog Agregar Giro Proveedor -->
+    <v-dialog v-model="agregarGiro" max-width="500px">
+      <v-form @submit.prevent="agregarGiroProveedor" v-model="valid" ref="fagregarMarca" lazy-validation>
+        <v-card>
+        <v-card-title>
+        <span class="headline">Agregar Giro</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container grid-list-md>
+            <v-layout wrap>
+              <v-flex xs12 sm12 md12>
+                <v-select
+              id="selectAgregarGiro"
+              :items="giroItem"
+              item-text="nombre"
+              :value="selectItem.id"
+              v-model="selectItem"
+              @change="onChangeGiro"
+              search-input
+              required
+              autocomplete
+              label="Item"
+              single-line
+              ></v-select>
+                </v-flex>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="blue darken-1" flat >Cancelar</v-btn>
+        <v-btn color="blue darken-1" type="submit" flat >Guardar</v-btn>
+        </v-card-actions>
+        </v-card>
+      </v-form>
+    </v-dialog>
+<!-- Fin Dialog Agregar Giro Proveedor -->
     <!-- Dialog Editar Tipo -->
        <v-dialog v-model="dialogEdit" max-width="500px">
         <form @submit.prevent="editProveedor">
@@ -285,8 +368,8 @@
                 item-value="id"
                 item-text="nombre"
                 :items="giroItem"
-                :value="addItem.id_giro"
-                v-model="addItem.id_giro"
+                :value="selectItem.id"
+                v-model="selectItem"
                 label="Giro"
                 single-line
                 ></v-select>
@@ -371,9 +454,20 @@
   export default {
     components: { config, item },
     data: () => ({
+      headers: [ // Encabezados de  la tabla
+        { text: 'Rut', value: 'nombre', sortable: true, width: '33%', align: 'center' },
+        { text: 'Nombre', value: 'rut', width: '33%', align: 'center' },
+        { text: 'Opciones', sortable: false, width: '33%', align: 'center' }
+      ],
+      headersItem: [ // Encabezados de  la tabla
+        { text: 'Nombre', value: 'nombre', width: '20%', align: 'center' },
+        { text: 'Opciones', sortable: false, width: '20%', align: 'center' }
+      ],
       ciudad: 0,
       ciudadItem: [],
+      GirosTabla: [],
       giroItem: [],
+      selectItem: {id: 0, nombre: ''},
       textoRules: validaciones.textoRules,
       emailRules: validaciones.emailRules,
       selectValidado: false,
@@ -381,6 +475,7 @@
       dialogAdd: false, // prop para abrir y cerrar modal de Agregar Tipo
       dialogEdit: false, // prop para abrir y cerrar modal de Editar Tipo
       dialogDetail: false, // prop para abrir y cerrar modal de Detalle Tipo
+      agregarGiro: false,
       dialogDelete: false,
       dialog3: false, // prop para abrir y cerrar modal de Delete Tipo
       rutValidado: false,
@@ -388,6 +483,7 @@
       editedIndex: -1,
       deleteIndex: -1,
       search: '',
+      girosAgregar: [],
       selectSelectGiro: 0,
       inputArray: [{idInput: 'selectItemGiro'}],
       snackbar: false,
@@ -395,17 +491,6 @@
       mode: '',
       timeout: 3000,
       text: 'Se ha agregado con exito',
-      headers: [ // Encabezados de  la tabla
-        {
-          text: 'Rut',
-          value: 'nombre',
-          sortable: true,
-          width: '33%',
-          align: 'center'
-        },
-        { text: 'Nombre', value: 'rut', width: '33%', align: 'center' },
-        { text: 'Opciones', sortable: false, width: '33%', align: 'center' }
-      ],
       items: [],
       giros: [],
       valid: true,
@@ -470,7 +555,7 @@
         this.selectValidado = true
       },
       onChangeGiro (val) {
-        this.selectValidado2 = true
+        // this.selectValidado2 = true
       },
       checkRut: function (rut) {
         var valorOriginal = rut.target.value.replace('.', '')
@@ -544,6 +629,7 @@
         axios.get(config.API_LOCATION + `/bodega/giro/`)// petición GET a Categoria para traer a todos los objetos "categoria"que contengan como tipo "insumo"
           .then((response) => {
             this.giroItem = response.data
+            console.log(this.giroItem)
           })
           .catch(e => {
           })
@@ -596,6 +682,20 @@
         this.inputArray.push(value)
         console.log(this.inputArray) // someValue
       },
+      agregarGiroProveedor (e) {
+        console.log(this.selectItem)
+        this.GirosTabla.push(this.selectItem)
+        var nombreGiro = document.getElementById('selectAgregarGiro').value
+        console.log(nombreGiro)
+        /* selectAgregarGiro
+        var item = this.selectItem
+        var cantidaItem = document.getElementById('cantidad').value
+        this.itemsAPrestar.push({item: item, cantidad: cantidaItem})
+        var indexArray = this.itemsSelectPrestar.findIndex(x => x.id === item.id)
+        this.itemsSelectPrestar.splice(indexArray, 1)
+        this.agregarItem = false
+        */
+      },
       agregarProveedorN (e) { // función para agregar un nuevo Tipo
         var rut = this.addItem.rut
         console.log(rut)
@@ -641,13 +741,11 @@
       },
       agregadetalle (rutProveedor) {
         var rut = rutProveedor
-        for (var i = 0; i < this.inputArray.length; i++) {
+        console.log('entreAgregarDetalle')
+        for (var i = 0; i < this.girosAgregar.length; i++) {
           console.log('entre')
           // console.log((this.inputArray[i].idInput).getAttribute('value'))
-          var idgiro = parseInt(document.getElementById(this.inputArray[i].idInput).getAttribute('value'))
-          console.log(document.getElementById(this.inputArray[i].idInput))
-          console.log(idgiro)
-          console.log(rut)
+          var idgiro = this.girosAgregar[i].id
           axios.post(config.API_LOCATION + '/bodega/detalle_giro/', { // petición POST a Tipo para agregar
             id_giro: {id: idgiro},
             rut_proveedor: {rut: rut}
@@ -776,6 +874,9 @@
           .catch(function (error) {
             console.log(error)
           })
+      },
+      agregarGiroModal () {
+        this.agregarGiro = true
       },
       close () {
         this.dialog = false

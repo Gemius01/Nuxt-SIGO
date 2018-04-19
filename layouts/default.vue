@@ -119,7 +119,7 @@
             title: 'Gestión Administrativa',
             active: false,
             items: [
-              { title: 'Tipo', to: '/tipo' },
+              // { title: 'Tipo', to: '/tipo' },
               { title: 'Crear Orden de Compra', to: '/ordenCompra' },
               { title: 'Ingresar Cotización', to: '/cotizacion' },
               { title: 'Registrar Compra', to: '/compra' },

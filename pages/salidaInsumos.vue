@@ -536,6 +536,7 @@
         var indexArray = this.itemsSelectSalida.findIndex(x => x.id === item.id)
         this.itemsSelectSalida.splice(indexArray, 1)
         this.agregarItem = false
+        this.stockActual = ''
       },
       editarItemASalir (e) {
         Object.assign(this.itemsASalir[this.editedIndex], this.editItemSalir)
@@ -688,3 +689,10 @@
     }
   }
 </script>
+<style>
+  .ordenDesc{
+    background-color: orange;
+    border-radius: 3px;
+    text-align: center;
+  }
+</style>

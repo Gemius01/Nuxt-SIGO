@@ -847,8 +847,12 @@
         this.dialogEdit = false
       },
       modalDetalle (item) {
-        this.detailItem = this.items.indexOf(item) // obtener posición del array
+        console.log(item)
+        // this.detailItem.id = 1
+        // this.detailItem = this.items.indexOf(item) // obtener posición del array
         this.detailItem = Object.assign({}, item)
+        this.detailItem.id_orden_compra.id_cotizacion.id = 1
+        console.log(this.detailItem)
         this.dialogDetail = true
       },
       cerrarModalDetail () {

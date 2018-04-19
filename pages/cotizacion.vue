@@ -417,14 +417,20 @@
       agregarCotizacion (e) { // función para realizar un prestamo
         var idSelectOrden = parseInt(document.getElementById('selectOrdenCompra').getAttribute('value'))
         var idProveedor = document.getElementById('selectProveedor').getAttribute('value')
-        console.log(idProveedor)
+        console.log('' + idSelectOrden + ' ' + idProveedor + ' ')
         var totalNeto = this.txtValorNeto
         for (var i = 0; i < this.inputValores.length; i++) {
           var inputVal = document.getElementById(this.inputValores[i].idValor).value
           console.log(inputVal)
           if (inputVal) { } else { this.incompleta = true }
         }
-        axios.post(config.API_LOCATION + '/bodega/cotizacion/', {fecha: '', incompleta: this.incompleta, total_neto: totalNeto, orden_compra: idSelectOrden, rut_proveedor: {rut: '' + idProveedor + ''}})
+        axios.post(config.API_LOCATION + '/bodega/cotizacion/', {
+          fecha: '',
+          incompleta: this.incompleta,
+          total_neto: totalNeto,
+          orden_compra: idSelectOrden, 
+          rut_proveedor: {rut: '' + idProveedor + ''}
+        })
           .then((response) => {
             console.log(response.data.id)
             for (var i = 0; i < this.inputValores.length; i++) {

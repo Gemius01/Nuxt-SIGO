@@ -431,7 +431,7 @@
         this.editedItem.id_unidad_medida.nombre = val.target.value
       },
       initialize () { // Función que recarga los datos de la Tabla mediante request a la API REST
-        axios.get(config.API_LOCATION + `/bodega/item/`) // petición GET a Tipo para traer a todos los objetos "tipo"
+        axios.get(config.API_LOCATION + `/bodega/item/herramienta`) // petición GET a Tipo para traer a todos los objetos "tipo"
           .then((response) => {
             this.items = response.data// LLenado del array "items"
           })
