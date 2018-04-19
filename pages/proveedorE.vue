@@ -226,7 +226,7 @@
            <v-expansion-panel-content v-for="(item,i) in 1" :key="i">
              <div slot="header"><h4>Giro/s :</h4></div>
              <v-card>
-               <v-card-text class="light-green lighten-3" v-for="giro in giros">{{giro.id_giro.id}} : {{ giro.id_giro.nombre }}</v-card-text>
+               <v-card-text class="light-green lighten-3" v-for="(giro,i) in giros" :key="i">{{giro.id_giro.id}} : {{ giro.id_giro.nombre }}</v-card-text>
              </v-card>
            </v-expansion-panel-content>
          </v-expansion-panel>
