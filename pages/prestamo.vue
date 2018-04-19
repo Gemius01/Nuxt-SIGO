@@ -620,7 +620,7 @@
           })
       },
       eliminarItem (item) {
-        var indexArray = this.itemsAPrestar.findIndex(x => x.item === item)
+        var indexArray = this.itemsAPrestar.findIndex(x => x.item.id === item.item.id)
         this.itemsAPrestar.splice(indexArray, 1)
         this.itemsSelectPrestar.push(item.item)
       },
