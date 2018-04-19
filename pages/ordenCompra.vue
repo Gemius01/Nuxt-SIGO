@@ -276,7 +276,7 @@
               </v-flex>
                 <v-flex xs12 class="divItemCotizacion">
                 <h4 class="textDivCotizacion"> Cotizaciones</h4>
-                 <v-flex xs12 v-for="(cotizacion, key, index) in cotizacionesByCompra">
+                 <v-flex xs12 v-for="(cotizacion, key, index) in cotizacionesByCompra" :key="key">
                    <v-container grid-list-md text-xs-center>
                     <v-layout row wrap v-if="cotizacion.incompleta == false" class="cotizacionCompleta">
                       <v-flex xs2>
@@ -365,14 +365,17 @@
               <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
               <v-list-tile-title>{{ detailItem.cotizable }}</v-list-tile-title>
             </v-list-tile>
-            
             <v-flex xs12>
         <v-expansion-panel focusable>
-      <v-expansion-panel-content v-for="item in this.itemsOrden">
-        <div slot="header">Item : {{ item.id_item.nombre }}</div>
-        <v-card>
-          <v-card-text class="light-green lighten-3">Cantidad : {{ item.cantidad }}</v-card-text>
-        </v-card>
+      <v-expansion-panel-content v-for="(item,i) in this.itemsOrden" :key="i">
+        <div slot="header">Item</div>
+        <v-list dense>
+        <v-list-tile class="hoverMouse">
+              <v-list-tile-title>{{ item.id_item.nombre }}</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ item.cantidad }}</v-list-tile-title>
+            </v-list-tile>
+            </v-list>
       </v-expansion-panel-content>
     </v-expansion-panel>
         </v-flex>
@@ -422,7 +425,7 @@
         </v-flex>
         <v-flex xs12>
         <v-expansion-panel focusable>
-      <v-expansion-panel-content v-for="item in this.detailItemsCotizacion">
+      <v-expansion-panel-content v-for="(item,i) in this.detailItemsCotizacion":key="i">
         <div slot="header">Item : {{ item.id_item.nombre }}</div>
         <v-card>
           <v-card-text class="light-green lighten-3">Cantidad : {{ item.cantidad }}</v-card-text>
