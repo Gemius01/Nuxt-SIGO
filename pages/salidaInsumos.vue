@@ -24,7 +24,7 @@
           <v-container grid-list-md>
             <v-layout wrap >
               <v-flex xs12 sm12 md12>
-                <v-text-field label="RUT Solicitante"  :rules="textoRules" :counter="20" name="solicitante" v-model="addItem.solicitante" required></v-text-field>
+                <v-text-field label="RUT Solicitante"  :rules="[v => !!v || 'Campo vacío', v => this.rutValidado || 'Rut Invalido']" v-on:keyup="checkRut" :counter="20" name="solicitante" v-model="addItem.solicitante" required></v-text-field>
               </v-flex>
               <v-flex xs12 sm12 md12>
                 <v-text-field label="Motivo"  :rules="textoRules" :counter="20" name="motivo" v-model="addItem.motivo" required></v-text-field>
@@ -86,7 +86,7 @@
     </v-dialog>
     <!-- Fin Dialog Realizar Prestamo -->
     <v-dialog v-model="agregarItem" max-width="500px">
-      <v-form @submit.prevent="agregarItemASalir" v-model="valid" ref="fagregarMarca" lazy-validation>
+      <v-form @submit.prevent="agregarItemASalir" v-model="valid" ref="fagregarItem" lazy-validation>
         <v-card>
         <v-card-title>
         <span class="headline">Agregar Item</span>
@@ -95,14 +95,13 @@
           <v-container grid-list-md>
             <v-layout wrap>
               <v-select
-              id="selectItemSalida"
               :items="itemsSelectSalida"
               item-text="nombre"
-              :value="selectItem.id"
+              item-value="id"
               v-model="selectItem"
-              @change="changeItemSalida"
+              v-on:change="onChangeSelectAgregar"
               search-input
-              :rules="[() => !!this.selectItem || 'Campo requerido']"
+              :rules="[v => this.selectValidado || 'Campo Vacío']"
               :error-messages="errorMessages"
               required
               autocomplete
@@ -111,17 +110,17 @@
               ></v-select>
               </v-flex>
               <v-flex xs6>
-              <v-text-field label="Cantidad" type="number" id="cantidad" v-model="addItem.cantidad" required></v-text-field>
-              </v-flex> 
+              <v-text-field label="Cantidad" type="number" :rules="numberRules" id="cantidad" v-model="addItem.cantidad" required></v-text-field>
+              </v-flex>
               <v-flex xs12 class="ordenDesc"  >
-                   <h4>Stock Disponible: </h4><h4 v-model="stockActual">{{ stockActual }}</h4>   
+                   <h4>Stock Disponible: </h4><h4 v-model="stockActual">{{ stockActual }}</h4>
               </v-flex>
             </v-layout>
           </v-container>
         </v-card-text>
         <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" flat >Cancelar</v-btn>
+        <v-btn color="blue darken-1" flat @click="clearAgregarItemModal">Cancelar</v-btn>
         <v-btn color="blue darken-1" type="submit" flat >Guardar</v-btn>
         </v-card-actions>
         </v-card>
@@ -129,7 +128,7 @@
     </v-dialog>
     <!-- Dialog Editar Item a Prestar -->
     <v-dialog v-model="editarItemModal" max-width="500px">
-      <v-form @submit.prevent="editarItemASalir" v-model="valid" ref="fagregarMarca" lazy-validation>
+      <v-form @submit.prevent="editarItemASalir" v-model="valid" ref="fEditarItemModal" lazy-validation>
         <v-card>
         <v-card-title>
         <span class="headline">Editar Item</span>
@@ -141,14 +140,14 @@
               <v-text-field label="Item" v-model="editItemSalir.item.nombre" required disabled></v-text-field>
               </v-flex>
               <v-flex xs6>
-              <v-text-field label="Cantidad" type="number"  v-model="editItemSalir.cantidad" required></v-text-field>
+              <v-text-field label="Cantidad" type="number" :rules="numberRules" v-model="editItemSalir.cantidad" required></v-text-field>
               </v-flex>
             </v-layout>
           </v-container>
         </v-card-text>
         <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" flat >Cancelar</v-btn>
+        <v-btn color="blue darken-1" flat @click="clearEditarItemModal">Cancelar</v-btn>
         <v-btn color="blue darken-1" type="submit" flat >Guardar</v-btn>
         </v-card-actions>
         </v-card>
@@ -280,8 +279,8 @@
 <v-dialog v-model="dialogDetail" max-width="500px">
         <form @submit.prevent="">
       <v-card>
-       
-      </v-flex>               
+
+      </v-flex>
       <v-card>
           <v-card-title><h1> Detalle de Salida</h1></v-card-title>
           <v-divider></v-divider>
@@ -308,7 +307,7 @@
             </v-list-tile>
             <v-flex xs12>
         <v-expansion-panel focusable>
-      <v-expansion-panel-content v-for="item in this.itemPrestado">
+      <v-expansion-panel-content v-for="(item,i) in this.itemPrestado" :key="i">
         <div slot="header">Item : {{ item.id_item.nombre }}</div>
         <v-card>
           <v-card-text class="light-green lighten-3">Cantidad : {{ item.cantidad }}</v-card-text>
@@ -329,7 +328,7 @@
       </v-card>
        </form>
      </v-dialog>
-       
+
     <!-- Fin Dialog Detalle Prestamo -->
     <!-- Tabla -->
     <v-card>
@@ -403,6 +402,7 @@
         { text: 'Opciones', sortable: false, width: '33%', align: 'center' }
       ],
       textoRules: validaciones.textoRules,
+      numberRules: validaciones.numberRules,
       errorMessages: [],
       itemsASalir: [],
       stockActual: '',
@@ -415,6 +415,8 @@
       editarItemModal: false,
       detalleItemModal: false,
       agregarItem: false,
+      selectValidado: false,
+      rutValidado: false,
       pagination: {}, // paginación de la tabla
       editedIndex: -1,
       deleteIndex: -1,
@@ -509,13 +511,63 @@
           .catch(e => {
           })
       },
-      changeItemSalida (e) {
-        axios.get(config.API_LOCATION + '/bodega/item/' + e.id + '')
-          .then((response) => {
-            this.stockActual = response.data.stock
-          })
-          .catch(e => {
-          })
+      checkRut: function (rut) {
+        var valorOriginal = rut.target.value.replace('.', '')
+        var valor = rut.target.value.replace('.', '')
+        var cuerpo = null
+        var dv = null
+        for (var j = 1; j <= valorOriginal.length; j++) {
+          valor = valor.replace('.', '')
+          valor = valor.replace('-', '')
+        }
+        // Despejar Guión
+        valor = valor.replace('-', '')
+        // Aislar Cuerpo y Dígito Verificador
+        cuerpo = valor.slice(0, -1)
+        dv = valor.slice(-1).toUpperCase()
+        // Formatear RUN
+        rut.value = cuerpo + '-' + dv
+        // Si no cumple con el mínimo ej. (n.nnn.nnn)
+        if (cuerpo.length < 7) { this.rutValidado = false } else {
+          var suma = 0
+          var multiplo = 2
+
+          // Para cada dígito del Cuerpo
+          for (var i = 1; i <= cuerpo.length; i++) {
+          // Obtener su Producto con el Múltiplo Correspondiente
+            var index = multiplo * valor.charAt(cuerpo.length - i)
+
+            // Sumar al Contador General
+            suma = suma + index
+
+            // Consolidar Múltiplo dentro del rango [2,7]
+            if (multiplo < 7) { multiplo = multiplo + 1 } else { multiplo = 2 }
+          }
+          // Calcular Dígito Verificador en base al Módulo 11
+          var dvEsperado = 11 - (suma % 11)
+          // Casos Especiales (0 y K)
+          dv = (dv === 'K') ? 10 : dv
+          dv = (dv === 0) ? 11 : dv
+          // Validar que el Cuerpo coincide con su Dígito Verificador
+
+          // console.log('dv:' + dv + 'dvEsperado:' + dvEsperado)
+          if (parseInt(dvEsperado) !== parseInt(dv)) { this.rutValidado = false } else {
+            this.rutValidado = true
+          }
+        }
+        // Calcular Dígito Verificador
+      },
+      onChangeSelectAgregar (e) {
+        if(e!==null){
+          axios.get(config.API_LOCATION + '/bodega/item/' + e + '')
+            .then((response) => {
+              this.stockActual = response.data.stock
+            })
+            .catch(e => {
+            })
+          this.selectValidado = true
+        }
+
       },
       detalleItem (obj) {
         axios.get(config.API_LOCATION + '/bodega/item/' + obj.item.id + '')
@@ -530,17 +582,28 @@
         this.selectItemPrestamo = e.id
       },
       agregarItemASalir () {
-        var item = this.selectItem
+        var idItem = this.selectItem
         var cantidaItem = document.getElementById('cantidad').value
-        this.itemsASalir.push({item: item, cantidad: cantidaItem})
-        var indexArray = this.itemsSelectSalida.findIndex(x => x.id === item.id)
-        this.itemsSelectSalida.splice(indexArray, 1)
-        this.agregarItem = false
-        this.stockActual = ''
+        var item = []
+        if (this.$refs.fagregarItem.validate()) {
+          axios.get(config.API_LOCATION + '/bodega/item/' + idItem + '')
+            .then((response) => {
+              item = response.data
+              this.itemsASalir.push({item: item, cantidad: cantidaItem})
+              var indexArray = this.itemsSelectSalida.findIndex(x => x.id === item)
+              this.itemsSelectSalida.splice(indexArray, 1)
+              this.agregarItem = false
+              this.stockActual = ''
+            })
+            .catch(idItem => {
+            })
+        }
       },
-      editarItemASalir (e) {
-        Object.assign(this.itemsASalir[this.editedIndex], this.editItemSalir)
-        this.editarItemModal = false
+      editarItemASalir () {
+        if (this.$refs.fEditarItemModal.validate()) {
+          Object.assign(this.itemsASalir[this.editedIndex], this.editItemSalir)
+          this.editarItemModal = false
+        }
       },
       cargarItems () {
         axios.get(config.API_LOCATION + '/bodega/item/insumo')
@@ -566,42 +629,47 @@
         var rutSolicitanteF = e.target.elements.solicitante.value
         var motivoF = e.target.elements.motivo.value
         if (this.$refs.fRealizarSalida.validate()) {
-          axios.post(config.API_LOCATION + '/bodega/salida/', {
-            rutSolicitante: '' + rutSolicitanteF + '', motivo: '' + motivoF + '', usuarioResponsable: 'Admin', fecha: '', hora: null
-          })
-            .then((responseSalida) => {
-              for (var i = 0; i < this.itemsASalir.length; i++) {
-                var idItem = this.itemsASalir[i].item.id
-                var idCantidad = this.itemsASalir[i].cantidad
-                axios.post(config.API_LOCATION + '/bodega/detalle_salida/', {
-                  cantidad: idCantidad, id_item: {id: idItem}, id_salida: {id: responseSalida.data.id}
-                })
-                  .then((response) => {
-                    // Petición put editar ITEM
-                    axios.get(config.API_LOCATION + '/bodega/item/' + idItem + '')
-                      .then((responseGET) => {
-                        var stockFinal = responseGET.data.stock - idCantidad
-                        console.log(stockFinal)
-                        axios.put(config.API_LOCATION + '/bodega/item/' + idItem + '', {
-                          nombre: responseGET.data.nombre,
-                          id_marca: {id: responseGET.data.id_marca.id},
-                          modelo: responseGET.data.modelo,
-                          stock: stockFinal,
-                          stockCritico: responseGET.data.stockCritico,
-                          id_unidad_medida: {id: responseGET.data.id_unidad_medida.id},
-                          id_subcategoria: {id: responseGET.data.id_subcategoria.id}
-                        })
-                          .then((responseGET) => {
-                            // asd
-                          })
-                      })
-                  })
-              }
-              // this.items.push(response.data)// LLenado del array "items"
-              this.initialize()
-              this.dialogAdd = false // cerrar el modal
-              this.snackbar = true
+          if(this.itemsASalir.length <= 0){
+            alert("Debe Agregar Items")
+          }
+          else{
+            axios.post(config.API_LOCATION + '/bodega/salida/', {
+              rutSolicitante: '' + rutSolicitanteF + '', motivo: '' + motivoF + '', usuarioResponsable: 'Admin', fecha: '', hora: null
             })
+              .then((responseSalida) => {
+                for (var i = 0; i < this.itemsASalir.length; i++) {
+                  var idItem = this.itemsASalir[i].item.id
+                  var idCantidad = this.itemsASalir[i].cantidad
+                  axios.post(config.API_LOCATION + '/bodega/detalle_salida/', {
+                    cantidad: idCantidad, id_item: {id: idItem}, id_salida: {id: responseSalida.data.id}
+                  })
+                    .then((response) => {
+                      // Petición put editar ITEM
+                      axios.get(config.API_LOCATION + '/bodega/item/' + idItem + '')
+                        .then((responseGET) => {
+                          var stockFinal = responseGET.data.stock - idCantidad
+                          console.log(stockFinal)
+                          axios.put(config.API_LOCATION + '/bodega/item/' + idItem + '', {
+                            nombre: responseGET.data.nombre,
+                            id_marca: {id: responseGET.data.id_marca.id},
+                            modelo: responseGET.data.modelo,
+                            stock: stockFinal,
+                            stockCritico: responseGET.data.stockCritico,
+                            id_unidad_medida: {id: responseGET.data.id_unidad_medida.id},
+                            id_subcategoria: {id: responseGET.data.id_subcategoria.id}
+                          })
+                            .then((responseGET) => {
+                              // asd
+                            })
+                        })
+                    })
+                }
+                // this.items.push(response.data)// LLenado del array "items"
+                this.initialize()
+                this.dialogAdd = false // cerrar el modal
+                this.snackbar = true
+              })
+          }
         }
       },
       devolverPrestamo () {
@@ -669,6 +737,13 @@
       },
       clearEditModal () {
         this.dialogEdit = false
+      },
+      clearAgregarItemModal () {
+        this.agregarItem = false
+        this.$refs.fagregarItem.reset()
+      },
+      clearEditarItemModal () {
+        this.editarItemModal = false
       },
       modalDetalle (item) {
         var id = item.id

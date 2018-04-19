@@ -71,14 +71,13 @@
               </v-flex>
               <v-flex xs9>
           <v-select
-            id="selectCat"
             :items="categorias"
             item-text="nombre"
-            value="id"
-            v-model="categoriaSelectID"
+            item-value="id"
+            v-model="addItem.categoria"
             search-input
-            :rules="[() => !!this.categoriaSelectID.id || 'This field is required']"
-            :error-messages="errorMessages"
+            v-on:change="onChangeSelectAgregar"
+            :rules="[v => this.selectValidado || 'Campo Vacío']"
             required
             autocomplete
             label="Categoría"
@@ -99,7 +98,7 @@
     <!-- Fin Dialog Agregar Subcategoria -->
     <!-- Dialog Editar Subcategoria -->
        <v-dialog v-model="dialogEdit" max-width="500px">
-        <form @submit.prevent="editSubCat">
+        <v-form @submit.prevent="editSubCat" ref="fEditarSubCat">
       <v-card>
         <v-card-title>
           <span class="headline">Editar Subcategoria</span>
@@ -118,13 +117,11 @@
               </v-flex>
               <v-flex xs9>
           <v-select
-            id="selectCatEdit"
             :items="categorias"
             item-text="nombre"
             item-value="id"
             @select='onChangeSelect'
-            v-model="editedItem.id_categoria"
-            :rules="[() => !!this.editedItem.id || 'This field is required']"
+            v-model="editedItem.id_categoria.id"
             :error-messages="errorMessages"
             search-input
             autocomplete
@@ -141,50 +138,53 @@
           <v-btn color="blue darken-1" type="submit" flat>Guardar</v-btn>
         </v-card-actions>
       </v-card>
-       </form>
+    </v-form>
     </v-dialog>
     <!-- Fin Dialog Editar Subcategoria -->
     <!-- Dialog Detalle Subcategoria -->
-<v-dialog v-model="dialogDetail" max-width="500px">
-        <form @submit.prevent="">
+       <v-dialog v-model="dialogDetail" max-width="500px">
       <v-card>
+        <v-card-title>
+          <span class="headline">Detalle Subcategoria</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container grid-list-md>
+            <v-layout wrap>
+            <v-flex xs12>
+          <v-card dark color="primary">
+            <v-card-text class="px-0" v-model="detailItem.id" style="text-align:center;">ID : {{detailItem.id}}</v-card-text>
+          </v-card>
+        </v-flex>
+         <v-flex xs12>
+          <v-card dark color="primary">
+            <v-card-text class="px-0" v-model="detailItem.nombre" style="text-align:center;">Nombre : {{detailItem.nombre}}</v-card-text>
+          </v-card>
+        </v-flex>
+         <v-flex xs12>
+          <v-card dark color="primary">
+            <v-card-text class="px-0" v-model="detailItem.categoria" style="text-align:center;">Categoría : {{detailItem.categoria}}</v-card-text>
+          </v-card>
+        </v-flex>
+        <v-flex xs12>
+          <v-card dark color="primary">
+            <v-card-text class="px-0" v-model="detailItem.id_categoria" style="text-align:center;">ID_Categoria : {{detailItem.id_categoria}}</v-card-text>
+          </v-card>
+        </v-flex>
 
-          <v-card-title><h1> Detalle de Subcategoría Insumo</h1></v-card-title>
-          <v-divider></v-divider>
-
-          <v-list dense >
-            <v-list-tile class="hoverMouse">
-              <v-list-tile-title>ID Subcategoría</v-list-tile-title>
-              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
-              <v-list-tile-title>{{ detailItem.id }}</v-list-tile-title>
-            </v-list-tile>
-            <v-list-tile class="hoverMouse">
-              <v-list-tile-title>Nombre Subcategoría</v-list-tile-title>
-              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
-              <v-list-tile-title>{{ detailItem.nombre }}</v-list-tile-title>
-            </v-list-tile>
-            <v-list-tile class="hoverMouse">
-              <v-list-tile-title>Nombre Categoria</v-list-tile-title>
-              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
-              <v-list-tile-title>{{ detailItem.categoria }}</v-list-tile-title>
-            </v-list-tile>
-
-           </v-list>
-           
-
-       
+            </v-layout>
+          </v-container>
+        </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" flat @click.native="cerrarModalDetail">Cerrar</v-btn>
         </v-card-actions>
       </v-card>
-       </form>
     </v-dialog>
     <!-- Fin Dialog Editar Subcategoria -->
     <!-- Tabla -->
     <v-card>
     <v-card-title>
-        <h1>SUBCATEGORÍA INSUMOS</h1>
+        <h1>SUBCATEGORÍA INSUMO</h1>
         <v-spacer></v-spacer>
         <v-text-field
           append-icon="search"
@@ -206,8 +206,8 @@
       <template slot="items" slot-scope="props">
         <td class="text-xs-center">{{ props.item.id }}</td>
         <td class="text-xs-center">{{ props.item.nombre }}</td>
-        <td class="text-xs-center">{{ props.item.categoria }}</td>
-        <td class="text-xs-center" style="display:none;">{{ props.item.id_categoria }}</td>
+        <td class="text-xs-center">{{ props.item.id_categoria.nombre }}</td>
+        <td class="text-xs-center" style="display:none;">{{ props.item.id_categoria.id }}</td>
         <td class="justify-center layout px-0">
         <v-tooltip top>
           <v-btn icon slot="activator" class="mx-0" @click="modalDetalle(props.item)" >
@@ -221,8 +221,7 @@
           </v-btn>
           <span>Editar</span>
           </v-tooltip>
-          <!-- boton eliminar
-          <v-tooltip top>
+          <!--<v-tooltip top>
           <v-btn icon slot="activator" class="mx-0" @click="modalDelete(props.item)">
             <v-icon color="red">delete</v-icon>
           </v-btn>
@@ -241,16 +240,18 @@
 <script>
   import axios from 'axios' // Modulo para realizar las peticiones
   import config from '../config.vue'
+  import validaciones from '../validaciones.vue'
   export default {
     components: { config },
     data: () => ({
-      textoRules: [(v) => !!v || 'Campo vacío', v => (v && v.length <= 20) || 'Máximo de caracteres'],
+      textoRules: validaciones.textoRules,
       errorMessages: [],
       dialogAdd: false, // prop para abrir y cerrar modal de Agregar Subcategoría
       dialogEdit: false, // prop para abrir y cerrar modal de Editar Subcategoría
       dialogDetail: false, // prop para abrir y cerrar modal de Detalle Subcategoría
       dialogDelete: false, // prop para abrir y cerrar modal de Delete Subcategoría
       pagination: {}, // paginación de la tabla
+      selectValidado: false,
       editedIndex: -1,
       deleteIndex: -1,
       categoriaSelectID: {},
@@ -284,8 +285,7 @@
       editedItem: { // prop temporal que guarda el objeto a editar o eliminar
         id: 0,
         nombre: '',
-        categoria: '',
-        id_categoria: 0
+        id_categoria: {id: 0}
       },
       detailItem: {
         id: 0,
@@ -332,9 +332,7 @@
       cargarSelectCat () {
         axios.get(config.API_LOCATION + `/bodega/categoria/tipo/insumo/`) // petición GET a Categoria para traer a todos los objetos "categoria"que contengan como tipo "insumo"
           .then((response) => {
-            for (var i = response.data.length; i >= 0; i--) {
-              this.categorias.push({id: '' + response.data[i - 1].id + '', nombre: '' + response.data[i - 1].nombre + ''})// LLenado del array "items"
-            }
+            this.categorias = response.data
           })
           .catch(e => {
           })
@@ -342,50 +340,55 @@
       initialize () { // Función que recarga los datos de la Tabla mediante request a la API REST
         axios.get(config.API_LOCATION + `/bodega/subcategoria/tipo/insumo/`) // petición GET a Subcategoría para traer todos los objetos "Subcategoría" que contengan como tipo insumo
           .then((response) => {
-            for (var i = response.data.length; i >= 0; i--) {
-              this.items.push({id: '' + response.data[i - 1].id + '', nombre: '' + response.data[i - 1].nombre + '', categoria: '' + response.data[i - 1].id_categoria.nombre + '', id_categoria: '' + response.data[i - 1].id_categoria.id + ''})// LLenado del array "items"
-            }
+            console.log(response.data)
+            this.items = response.data
           })
           .catch(e => {
           })
       },
       agregarSubCat (e) { // función para agregar un nuevo Subcategoría
-        var subCategoria = e.target.elements.nombreSubCat.value
-        var categoriaVal = this.categoriaSelectID.id
-        var categoriaNombre = e.target.elements.selectCat.value
-        console.log(categoriaNombre)
-        axios.post(config.API_LOCATION + '/bodega/subcategoria/', { // petición POST a Subcategoría para agregar
-          nombre: '' + subCategoria + '', id_categoria: { id: categoriaVal, nombre: '' + categoriaNombre + '' }
-        })
-          .then((response) => {
-            console.log(response.data)
-            this.items.push({id: '' + response.data.id + '', nombre: '' + response.data.nombre + '', categoria: '' + categoriaNombre + '', id_categoria: '' + response.data.id_categoria.id + ''})// LLenado del array "items"
-            this.dialogAdd = false // cerrar el modal
-            this.snackbar = true
-          }
-          )
+        var subCategoria = this.addItem.nombre
+        var categoriaVal = this.addItem.categoria
+        if (this.$refs.fAgregarSubCat.validate()) {
+          console.log(subCategoria + '**** ' + categoriaVal)
+          axios.post(config.API_LOCATION + '/bodega/subcategoria/', { // petición POST a Subcategoría para agregar
+            nombre: '' + subCategoria + '', id_categoria: { id: categoriaVal }
+          })
+            .then((response) => {
+              this.initialize()
+              this.dialogAdd = false // cerrar el modal
+              this.snackbar = true
+              this.$refs.fAgregarSubCat.reset()
+              this.selectValidado = false
+            }
+            )
+        }
       },
-      editSubCat (e) { // función para editar la Subcategoría
-        console.log(this.varPrueba)
-        console.log(this.editedItem)
-        var id = e.target.elements.idEdit.value // obtener id del objeto que se desea editar formulario
-        var nombre = e.target.elements.nombreEdit.value // obtener nombre del objeto que se desea editar formulario
-        var idCategoria = this.editedItem.id_categoria
-        axios.put(config.API_LOCATION + '/bodega/subcategoria/' + id + '', {// petición put para editar el tipo
-          nombre: '' + nombre + '', id_categoria: { id: idCategoria }
-        })
-          .then(response => {
-            Object.assign(this.items[this.editedIndex], this.editedItem) // eliminar objeto del array items
-            this.dialogEdit = false // cerrar modal
-          })
-          .catch(function (error) {
-            console.log(error)
-          })
+      onChangeSelectAgregar (val) {
+        this.selectValidado = true
       },
       modalEdit (item) { // funcion para llenar los items
         this.editedIndex = this.items.indexOf(item) // obtener posición del array
         this.editedItem = Object.assign({}, item)
         this.dialogEdit = true // abrir modal edit
+        console.log(this.editedItem)
+      },
+      editSubCat () { // función para editar la Subcategoría
+        var id = this.editedItem.id // obtener id del objeto que se desea editar formulario
+        var nombre = this.editedItem.nombre // obtener nombre del objeto que se desea editar formulario
+        var idCategoria = this.editedItem.id_categoria.id
+        if (this.$refs.fEditarSubCat.validate()) {
+          axios.put(config.API_LOCATION + '/bodega/subcategoria/' + id + '', {// petición put para editar el tipo
+            nombre: '' + nombre + '', id_categoria: { id: idCategoria }
+          })
+            .then(response => {
+              this.initialize()
+              this.dialogEdit = false // cerrar modal
+            })
+            .catch(function (error) {
+              console.log(error)
+            })
+        }
       },
       modalDelete (item) { // función abrir modal delete
         this.deleteIndex = this.items.indexOf(item) // obtener posición del array
@@ -408,6 +411,8 @@
       },
       clearAddModal () {
         // this.$refs.fAgregarSubCat.reset()
+        this.$refs.fAgregarSubCat.reset()
+        this.selectValidado = false
         this.dialogAdd = false
       },
       clearEditModal () {
@@ -424,8 +429,3 @@
     }
   }
 </script>
-<style type="text/css">
-  .hoverMouse:hover{
-    background-color: #D5CFCF;
-  }
-</style>
