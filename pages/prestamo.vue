@@ -255,7 +255,7 @@
             </v-list-tile>
             <v-flex xs12>
         <v-expansion-panel focusable>
-      <v-expansion-panel-content v-for="item in this.itemPrestado">
+      <v-expansion-panel-content v-for="(item,i) in this.itemPrestado" :key="i">
         <div slot="header">Item : {{ item.id_item.nombre }}</div>
         <v-card>
           <v-card-text class="light-green lighten-3">Cantidad : {{ item.cantidad }}</v-card-text>
@@ -309,7 +309,7 @@
             </v-list-tile>
             <v-flex xs12>
         <v-expansion-panel focusable>
-      <v-expansion-panel-content v-for="item in this.itemPrestado">
+      <v-expansion-panel-content v-for="(item,i) in this.itemPrestado" :key="i">
         <div slot="header">Item : {{ item.id_item.nombre }}</div>
         <v-card>
           <v-card-text class="light-green lighten-3">Cantidad : {{ item.cantidad }}</v-card-text>
@@ -620,7 +620,7 @@
           })
       },
       eliminarItem (item) {
-        var indexArray = this.itemsAPrestar.findIndex(x => x.item === item)
+        var indexArray = this.itemsAPrestar.findIndex(x => x.item.id === item.item.id)
         this.itemsAPrestar.splice(indexArray, 1)
         this.itemsSelectPrestar.push(item.item)
       },
