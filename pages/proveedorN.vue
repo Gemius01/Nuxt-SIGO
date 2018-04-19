@@ -687,6 +687,10 @@
         this.GirosTabla.push(this.selectItem)
         var nombreGiro = document.getElementById('selectAgregarGiro').value
         console.log(nombreGiro)
+        var indexArray = this.giroItem.findIndex(x => x.id === this.selectItem.id)
+        this.giroItem.splice(indexArray, 1)
+        this.agregarGiro = false
+
         /* selectAgregarGiro
         var item = this.selectItem
         var cantidaItem = document.getElementById('cantidad').value
@@ -742,10 +746,10 @@
       agregadetalle (rutProveedor) {
         var rut = rutProveedor
         console.log('entreAgregarDetalle')
-        for (var i = 0; i < this.girosAgregar.length; i++) {
+        for (var i = 0; i < this.GirosTabla.length; i++) {
           console.log('entre')
           // console.log((this.inputArray[i].idInput).getAttribute('value'))
-          var idgiro = this.girosAgregar[i].id
+          var idgiro = this.GirosTabla[i].id
           axios.post(config.API_LOCATION + '/bodega/detalle_giro/', { // petición POST a Tipo para agregar
             id_giro: {id: idgiro},
             rut_proveedor: {rut: rut}
