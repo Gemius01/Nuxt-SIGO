@@ -42,6 +42,9 @@
                 <v-text-field label="Motivo"  :rules="textoRules" :counter="20" name="motivo" v-model="addItem.motivo" required></v-text-field>
               </v-flex>
               <v-flex xs12>
+                <v-alert type="error" :value="alertItem">
+                Items esta vacio
+                </v-alert>
               <v-data-table
               :headers="headersItem"
               :items="itemsASalir"
@@ -243,13 +246,13 @@
               <v-flex xs12>
                <v-card>
                 <v-list dense >
-                  
+
                     <v-list-tile class="hoverMouse" xs12>
               <v-list-tile-title>Nombre</v-list-tile-title>
               <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
               <v-list-tile-title>{{ deleteItem.item.nombre }}</v-list-tile-title>
                   </v-list-tile>
-                
+
                 </v-list>
               </v-card>
               </v-flex>
@@ -455,6 +458,7 @@
       stockActual: '',
       itemsSelectSalida: [],
       paginationItems: {},
+      alertItem: false,
       dialogAdd: false, // prop para abrir y cerrar modal de Agregar Subcategoría
       dialogDevolver: false, // prop para abrir y cerrar modal de Editar Subcategoría
       dialogDetail: false, // prop para abrir y cerrar modal de Detalle Subcategoría
@@ -653,11 +657,14 @@
         var cantidaItem = document.getElementById('cantidad').value
         var item = []
         if (this.$refs.fagregarItem.validate()) {
+          this.alertItem = false
           axios.get(config.API_LOCATION + '/bodega/item/' + idItem + '')
             .then((response) => {
               var stockCritico = response.data.stockCritico
               item = response.data
               this.itemsASalir.push({item: item, cantidad: cantidaItem})
+              console.log('este')
+              console.log(this.itemsASalir)
               var indexArray = this.itemsSelectSalida.findIndex(x => x.id === item.id)
               console.log(indexArray)
               this.itemsSelectSalida.splice(indexArray, 1)
@@ -709,11 +716,13 @@
       realizarSalida (e) { // función para realizar un prestamo
         var rutSolicitanteF = e.target.elements.solicitante.value
         var motivoF = e.target.elements.motivo.value
-        if (this.$refs.fRealizarSalida.validate()) {
-          if(this.itemsASalir.length <= 0){
-            alert("Debe Agregar Items")
-          }
-          else{
+        if(this.itemsASalir.length <= 0){
+          this.alertItem = true
+        }
+        else{
+          this.alertItem = false
+        }
+        if (this.$refs.fRealizarSalida.validate() && this.itemsASalir.length > 0) {
             axios.post(config.API_LOCATION + '/bodega/salida/', {
               rutSolicitante: '' + rutSolicitanteF + '', motivo: '' + motivoF + '', usuarioResponsable: 'Admin', fecha: '', hora: null
             })
@@ -752,7 +761,6 @@
                 this.snackbar = true
               })
           }
-        }
       },
       devolverModal (item) {
         var id = item.id
@@ -782,7 +790,8 @@
         this.eliminarItemModalTable = false
       },
       clearAddModal () {
-        // this.$refs.fAgregarSubCat.reset()
+        this.$refs.fRealizarSalida.reset()
+        this.alertItem = false
         this.dialogAdd = false
       },
       clearEditModal () {
