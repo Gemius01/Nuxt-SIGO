@@ -432,7 +432,7 @@
         this.editedItem.id_unidad_medida.nombre = val.target.value
       },
       initialize () { // Función que recarga los datos de la Tabla mediante request a la API REST
-        axios.get(config.API_LOCATION + `/bodega/item/`) // petición GET a Tipo para traer a todos los objetos "tipo"
+        axios.get(config.API_LOCATION + `/bodega/item/insumo`) // petición GET a Tipo para traer a todos los objetos "tipo"
           .then((response) => {
             this.items = response.data// LLenado del array "items"
           })
@@ -488,6 +488,7 @@
             .then((response) => {
               this.initialize() // push al array de items
               this.dialogAdd = false // cerrar el modal
+              this.text = 'Se ha agregado correctamente'
               this.snackbar = true
               this.$refs.fAgregarInsumos.reset()
               this.selectValidado = false
@@ -519,6 +520,8 @@
           )
             .then(response => {
               Object.assign(this.items[this.editedIndex], this.editedItem) // eliminar objeto del array items
+              this.text = 'Se ha modificado correctamente'
+              this.snackbar = true
               this.dialogEdit = false // cerrar modal
             })
             .catch(function (error) {
@@ -535,6 +538,7 @@
             .then((response) => {
               this.dialog3 = false
               this.cargarSelectMarca()
+              this.text = 'Se ha agregado correctamente'
               this.snackbar = true
             })
         }

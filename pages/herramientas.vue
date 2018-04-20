@@ -487,6 +487,7 @@
             .then((response) => {
               this.initialize() // push al array de items
               this.dialogAdd = false // cerrar el modal
+              this.text = 'Se ha agregado correctamente'
               this.snackbar = true
               this.$refs.fAgregarHerramientas.reset()
               this.selectValidado = false
@@ -518,6 +519,8 @@
           )
             .then(response => {
               Object.assign(this.items[this.editedIndex], this.editedItem) // eliminar objeto del array items
+              this.text = 'Se ha modificado correctamente'
+              this.snackbar = true
               this.dialogEdit = false // cerrar modal
             })
             .catch(function (error) {

@@ -216,11 +216,46 @@
         </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" flat @click="detalleItemModal = false">Cancelar</v-btn>
+        <v-btn color="blue darken-1" flat @click="detalleItemModal = false">Cerrar</v-btn>
       </v-card-actions>
       </v-card>
     </v-dialog>
     <!--Fin Dialog Detalle Item a Prestar -->
+      <!-- Dialog Eliminar Item Salida -->
+    <v-dialog v-model="eliminarItemModalTable" max-width="500px">
+      <v-form @submit.prevent="eliminarItem" v-model="valid" ref="fagregarMarca" lazy-validation>
+        <v-card>
+        <v-card-title>
+        <span class="headline">¿Estás seguro de quitar el giro?</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container grid-list-md>
+            <v-layout wrap>
+              <v-flex xs12>
+               <v-card>
+                <v-list dense >
+                  
+                    <v-list-tile class="hoverMouse" xs12>
+              <v-list-tile-title>Nombre</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ deleteItem.item.nombre }}</v-list-tile-title>
+                  </v-list-tile>
+                
+                </v-list>
+              </v-card>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="blue darken-1" flat @click="eliminarItemModalTable = false">Cancelar</v-btn>
+        <v-btn color="blue darken-1" type="submit" flat >Quitar</v-btn>
+        </v-card-actions>
+        </v-card>
+      </v-form>
+    </v-dialog>
+<!-- Fin Dialog Eliminar Item Salida -->
     <!-- Dialog Devolver Prestamo -->
    <v-dialog v-model="dialogDevolver" max-width="500px">
       <form @submit.prevent="devolverPrestamo">
@@ -402,6 +437,7 @@
       dialogAdd: false, // modal para realizar un prestamo
       dialogDevolver: false, // modal para devolver items prestados
       dialogDetail: false, // modal de detalle de prestamo
+      eliminarItemModalTable: false,
       pagination: {}, // paginación de la tabla de prestamos
       paginationItems: {}, // paginacion de tabla items a prestar
       editedIndex: -1, // index de item para editar
@@ -454,6 +490,19 @@
         id_unidad_medida: '',
         stockCritico: '',
         stock: ''
+      },
+       deleteItem: {
+        item: {
+          id: 0,
+          nombre: '',
+          modelo: '',
+          id_marca: '',
+          id_subcategoria: '',
+          id_unidad_medida: '',
+          stockCritico: '',
+          stock: ''
+        },
+        cantidad: 0
       },
       defaultItem: {
         name: '',
@@ -568,6 +617,7 @@
             }
             this.initialize()
             this.dialogAdd = false // cerrar el modal
+            this.text = 'Se ha agregado correctamente'
             this.snackbar = true
           })
       },

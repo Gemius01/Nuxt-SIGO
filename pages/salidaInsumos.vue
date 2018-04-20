@@ -12,6 +12,18 @@
       <v-btn dark flat @click.native="snackbar = false">Cerrar</v-btn>
     </v-snackbar>
     <!-- Fin de SnackBar-->
+    <!-- SnackBar (mensaje de Success)-->
+ <v-snackbar
+      :timeout="timeoutAdvertencia"
+      :color="colorAdvertencia"
+      :multi-line="modeAdvertencia === 'multi-line'"
+      :vertical="modeAdvertencia === 'vertical'"
+      v-model="snackbarAdvertencia"
+    >
+      {{ textAdvertencia }}
+      <v-btn dark flat @click.native="snackbarAdvertencia = false">Cerrar</v-btn>
+    </v-snackbar>
+    <!-- Fin de SnackBar-->
   <!-- Dialog  Realizar Prestamo -->
     <v-dialog v-model="dialogAdd"  max-width="500px" >
       <v-btn dark color="primary"  slot="activator" >Generar Salida</v-btn>
@@ -56,7 +68,7 @@
                   <span>Editar</span>
                 </v-tooltip>
                 <v-tooltip top>
-                  <v-btn icon slot="activator" class="mx-0" @click="eliminarItem(props.item)">
+                  <v-btn icon slot="activator" class="mx-0" @click="eliminarItemModal(props.item)">
                   <v-icon color="deep-orange darken-1">delete</v-icon>
                   </v-btn>
                   <span>Quitar</span>
@@ -213,11 +225,46 @@
         </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" flat @click="detalleItemModal = false">Cancelar</v-btn>
+        <v-btn color="blue darken-1" flat @click="detalleItemModal = false">Cerrar</v-btn>
       </v-card-actions>
       </v-card>
     </v-dialog>
     <!--Fin Dialog Detalle Item a Prestar -->
+    <!-- Dialog Eliminar Item Salida -->
+    <v-dialog v-model="eliminarItemModalTable" max-width="500px">
+      <v-form @submit.prevent="eliminarItem" v-model="valid" ref="fagregarMarca" lazy-validation>
+        <v-card>
+        <v-card-title>
+        <span class="headline">¿Estás seguro de quitar el giro?</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container grid-list-md>
+            <v-layout wrap>
+              <v-flex xs12>
+               <v-card>
+                <v-list dense >
+                  
+                    <v-list-tile class="hoverMouse" xs12>
+              <v-list-tile-title>Nombre</v-list-tile-title>
+              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+              <v-list-tile-title>{{ deleteItem.item.nombre }}</v-list-tile-title>
+                  </v-list-tile>
+                
+                </v-list>
+              </v-card>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="blue darken-1" flat @click="eliminarItemModalTable = false">Cancelar</v-btn>
+        <v-btn color="blue darken-1" type="submit" flat >Quitar</v-btn>
+        </v-card-actions>
+        </v-card>
+      </v-form>
+    </v-dialog>
+<!-- Fin Dialog Eliminar Item Salida -->
     <!-- Dialog Devolver Prestamo -->
        <v-dialog v-model="dialogDevolver" max-width="500px">
         <form @submit.prevent="devolverPrestamo">
@@ -255,7 +302,7 @@
         </v-flex>
         <v-flex xs12>
         <v-expansion-panel focusable>
-      <v-expansion-panel-content v-for="item in this.itemPrestado">
+      <v-expansion-panel-content v-for="(item, i) in this.itemPrestado" :key="i">
         <div slot="header">Item : {{ item.id_item.nombre }}</div>
         <v-card>
           <v-card-text class="light-green lighten-3">Cantidad : {{ item.cantidad }}</v-card-text>
@@ -414,6 +461,7 @@
       dialogDelete: false, // prop para abrir y cerrar modal de Delete Subcategoría
       editarItemModal: false,
       detalleItemModal: false,
+      eliminarItemModalTable: false,
       agregarItem: false,
       selectValidado: false,
       rutValidado: false,
@@ -429,11 +477,19 @@
       editItemSalir: {item: {id: 1, nombre: 'asd', marca: ''}, cantidad: 0},
       search: '',
       inputArray: [{idInput: 'selectItemPrestamo', idCantidad: 'cantidad'}],
+      // SnackBar Exitoso
       snackbar: false,
       color: 'green',
       mode: '',
       timeout: 3000,
       text: 'Se ha agregado con exito',
+      //
+      // SnackBar Advertencia
+      snackbarAdvertencia: false,
+      colorAdvertencia: 'green',
+      modeAdvertencia: '',
+      timeoutAdvertencia: 3000,
+      textAdvertencia: 'Se ha agregado con exito',
       categorias: [],
       items: [],
       valid: true,
@@ -471,10 +527,17 @@
       },
       itemPrestado: [],
       deleteItem: {
-        id: 0,
-        nombre: '',
-        categoria: '',
-        id_categoria: 0
+        item: {
+          id: 0,
+          nombre: '',
+          modelo: '',
+          id_marca: '',
+          id_subcategoria: '',
+          id_unidad_medida: '',
+          stockCritico: '',
+          stock: ''
+        },
+        cantidad: 0
       },
       defaultItem: {
         name: '',
@@ -557,6 +620,10 @@
         }
         // Calcular Dígito Verificador
       },
+      eliminarItemModal (item) {
+        this.deleteItem = item
+        this.eliminarItemModalTable = true
+      },
       onChangeSelectAgregar (e) {
         if(e!==null){
           axios.get(config.API_LOCATION + '/bodega/item/' + e + '')
@@ -588,12 +655,23 @@
         if (this.$refs.fagregarItem.validate()) {
           axios.get(config.API_LOCATION + '/bodega/item/' + idItem + '')
             .then((response) => {
+              var stockCritico = response.data.stockCritico
               item = response.data
               this.itemsASalir.push({item: item, cantidad: cantidaItem})
-              var indexArray = this.itemsSelectSalida.findIndex(x => x.id === item)
+              var indexArray = this.itemsSelectSalida.findIndex(x => x.id === item.id)
+              console.log(indexArray)
               this.itemsSelectSalida.splice(indexArray, 1)
+              console.log(this.itemsSelectSalida)
               this.agregarItem = false
-              this.stockActual = ''
+              var advertenciaStock = this.stockActual - cantidaItem
+              console.log(advertenciaStock)
+              if (stockCritico >= advertenciaStock) {
+                console.log('entre')
+                this.colorAdvertencia = 'orange darken-4'
+                this.textAdvertencia = 'Advertencia "' + response.data.nombre + '" con Stock Crítico: ' + advertenciaStock + ''
+                this.snackbarAdvertencia = true
+              }
+
             })
             .catch(idItem => {
             })
@@ -602,6 +680,8 @@
       editarItemASalir () {
         if (this.$refs.fEditarItemModal.validate()) {
           Object.assign(this.itemsASalir[this.editedIndex], this.editItemSalir)
+          this.text = 'Se ha editado correctamente'
+          this.snackbar = true
           this.editarItemModal = false
         }
       },
@@ -617,6 +697,7 @@
         this.editItemSalir = item
         this.editedIndex = this.itemsASalir.indexOf(item)
         this.editarItemModal = true
+
       },
       agregarItemPrestado () {
         var html1 = '<item></item>'
@@ -667,46 +748,11 @@
                 // this.items.push(response.data)// LLenado del array "items"
                 this.initialize()
                 this.dialogAdd = false // cerrar el modal
+                this.text = 'Se ha generado correctamente'
                 this.snackbar = true
               })
           }
         }
-      },
-      devolverPrestamo () {
-        var idPrestamo = this.devolverItem.id
-        axios.put(config.API_LOCATION + '/bodega/prestamo/' + idPrestamo + '', {
-          fecha: this.devolverItem.fecha,
-          hora: this.devolverItem.hora,
-          rutSolicitante: this.devolverItem.rutSolicitante,
-          motivo: this.devolverItem.motivo,
-          devolucion: true,
-          fechaDevolucion: '',
-          usuarioResponsable: this.devolverItem.usuarioResponsable
-        })
-          .then((responsePutPrestamo) => {
-            axios.get(config.API_LOCATION + '/bodega/detalle_prestamo/' + idPrestamo + '/prestamo')
-              .then((responseGetDpres) => {
-                for (var i = 0; i < responseGetDpres.data.length; i++) {
-                  var idItem = responseGetDpres.data[i].id_item.id
-                  var stockFinal = responseGetDpres.data[i].cantidad + responseGetDpres.data[i].id_item.stock
-                  axios.put(config.API_LOCATION + '/bodega/item/' + idItem + '', {
-                    nombre: responseGetDpres.data[i].id_item.nombre,
-                    marca: responseGetDpres.data[i].id_item.marca,
-                    modelo: responseGetDpres.data[i].id_item.modelo,
-                    stock: stockFinal,
-                    stockCritico: responseGetDpres.data[i].id_item.stockCritico,
-                    id_unidad_medida: {id: responseGetDpres.data[i].id_item.id_unidad_medida.id},
-                    id_subcategoria: {id: responseGetDpres.data[i].id_item.id_subcategoria.id}
-                  })
-                    .then((responseGetDpres) => {
-                      this.initialize()
-                      this.dialogDevolver = false
-                    })
-                }
-              })
-          })
-          .catch(e => {
-          })
       },
       devolverModal (item) {
         var id = item.id
@@ -726,10 +772,14 @@
       close () {
         this.dialog = false
       },
-      eliminarItem (item) {
-        var indexArray = this.itemsASalir.findIndex(x => x.item === item)
+      eliminarItem () {
+        var item = this.deleteItem
+        var indexArray = this.itemsASalir.findIndex(x => x.item.id === item.item.id)
         this.itemsASalir.splice(indexArray, 1)
         this.itemsSelectSalida.push(item.item)
+        this.text = 'Se ha quitado correctamente'
+        this.snackbar = true
+        this.eliminarItemModalTable = false
       },
       clearAddModal () {
         // this.$refs.fAgregarSubCat.reset()

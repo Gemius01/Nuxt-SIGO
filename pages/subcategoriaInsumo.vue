@@ -357,6 +357,7 @@
             .then((response) => {
               this.initialize()
               this.dialogAdd = false // cerrar el modal
+              this.text = 'Se ha agregado correctamente'
               this.snackbar = true
               this.$refs.fAgregarSubCat.reset()
               this.selectValidado = false
@@ -383,6 +384,8 @@
           })
             .then(response => {
               this.initialize()
+              this.text = 'Se ha modificado correctamente'
+              this.snackbar = true
               this.dialogEdit = false // cerrar modal
             })
             .catch(function (error) {
