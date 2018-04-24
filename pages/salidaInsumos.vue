@@ -36,10 +36,10 @@
           <v-container grid-list-md>
             <v-layout wrap >
               <v-flex xs12 sm12 md12>
-                <v-text-field label="RUT Solicitante"  :rules="[v => !!v || 'Campo vacío', v => this.rutValidado || 'Rut Invalido']" v-on:keyup="checkRut" :counter="20" name="solicitante" v-model="addItem.solicitante" required></v-text-field>
+                <v-text-field label="RUT Solicitante"  :rules="[v => !!v || 'Campo vacío', v => this.rutValidado || 'Rut Invalido']" v-on:keyup="checkRut" :counter="20" name="solicitante" v-model="addItem.solicitante" ref="txtRut" required></v-text-field>
               </v-flex>
               <v-flex xs12 sm12 md12>
-                <v-text-field label="Motivo"  :rules="textoRules" :counter="20" name="motivo" v-model="addItem.motivo" required></v-text-field>
+                <v-text-field label="Motivo"  ref="txtMotivo" :rules="textoRules" :counter="20" name="motivo" v-model="addItem.motivo" required></v-text-field>
               </v-flex>
               <v-flex xs12>
                 <v-alert type="error" :value="alertItem">
@@ -125,7 +125,7 @@
               ></v-select>
               </v-flex>
               <v-flex xs6>
-              <v-text-field label="Cantidad" type="number" :rules="numberRules" id="cantidad" v-model="addItem.cantidad" required></v-text-field>
+              <v-text-field label="Cantidad" type="number" :rules="numberRules" v-on:keyup="stockExcedido" id="cantidad" v-model="addItem.cantidad" required></v-text-field>
               </v-flex>
               <v-flex xs12 class="ordenDesc"  >
                    <h4>Stock Disponible: </h4><h4 v-model="stockActual">{{ stockActual }}</h4>
@@ -155,7 +155,10 @@
               <v-text-field label="Item" v-model="editItemSalir.item.nombre" required disabled></v-text-field>
               </v-flex>
               <v-flex xs6>
-              <v-text-field label="Cantidad" type="number" :rules="numberRules" v-model="editItemSalir.cantidad" required></v-text-field>
+              <v-text-field label="Cantidad" type="number" :rules="numberRules" v-model="cantidadEditarItem" required></v-text-field>
+              </v-flex>
+              <v-flex xs12 class="ordenDesc"  >
+                   <h4>Stock Disponible: </h4><h4 v-model="stockActual">{{ stockActual }}</h4>
               </v-flex>
             </v-layout>
           </v-container>
@@ -476,6 +479,8 @@
       labelCantidad: 'Disponible : ' + 0 + '',
       categoriaSelectID: {},
       categoriaSelectIDEdit: {},
+      stockValidado: false,
+      stockValidadoEditar: false,
       value: '',
       selectItem: 0,
       editItemSalir: {item: {id: 1, nombre: 'asd', marca: ''}, cantidad: 0},
@@ -522,6 +527,7 @@
         stockCritico: '',
         stock: ''
       },
+      cantidadEditarItem: 0,
       detailItem: {
         id: 0,
         rutSolicitante: '',
@@ -577,6 +583,29 @@
           })
           .catch(e => {
           })
+      },
+      stockExcedido (stock) {
+        if ( this.addItem.cantidad > parseInt(this.stockActual)) {
+          this.color = 'red'
+          this.text = 'STOCK EXCEDIDO'
+          this.snackbar = true
+          this.stockValidado = false
+        } else {
+          this.stockValidado = true
+        }
+        console.log(this.stockValidado)
+      },
+      stockExcedidoEditar (stock) {
+        console.log ('' + this.cantidadEditarItem +'>'+ this.stockActual+ '')
+        if ( parseInt(this.cantidadEditarItem) > parseInt(this.stockActual)) {
+          console.log('entré')
+          this.color = 'red'
+          this.text = 'STOCK EXCEDIDO'
+          this.snackbar = true
+          this.stockValidadoEditar = false
+        } else {
+          this.stockValidadoEditar = true
+        }
       },
       checkRut: function (rut) {
         var valorOriginal = rut.target.value.replace('.', '')
@@ -656,7 +685,8 @@
         var idItem = this.selectItem
         var cantidaItem = document.getElementById('cantidad').value
         var item = []
-        if (this.$refs.fagregarItem.validate()) {
+        this.stockExcedido()
+        if (this.$refs.fagregarItem.validate() && this.stockValidado) {
           this.alertItem = false
           axios.get(config.API_LOCATION + '/bodega/item/' + idItem + '')
             .then((response) => {
@@ -677,6 +707,14 @@
                 this.colorAdvertencia = 'orange darken-4'
                 this.textAdvertencia = 'Advertencia "' + response.data.nombre + '" con Stock Crítico: ' + advertenciaStock + ''
                 this.snackbarAdvertencia = true
+                this.$refs.fagregarItem.reset()
+                this.stockActual = ''
+              } else {
+                this.color = 'green'
+                this.text = 'Se ha agregado un Item'
+                this.snackbar = true
+                this.$refs.fagregarItem.reset()
+                this.stockActual = ''
               }
 
             })
@@ -685,8 +723,11 @@
         }
       },
       editarItemASalir () {
-        if (this.$refs.fEditarItemModal.validate()) {
+        this.editItemSalir.cantidad = this.cantidadEditarItem
+        this.stockExcedidoEditar()
+        if (this.$refs.fEditarItemModal.validate() && this.stockValidadoEditar) {
           Object.assign(this.itemsASalir[this.editedIndex], this.editItemSalir)
+          this.color = 'green'
           this.text = 'Se ha editado correctamente'
           this.snackbar = true
           this.editarItemModal = false
@@ -701,10 +742,11 @@
           })
       },
       editItemModal (item) {
+        this.cantidadEditarItem = item.cantidad
         this.editItemSalir = item
+        this.stockActual = this.editItemSalir.item.stock
         this.editedIndex = this.itemsASalir.indexOf(item)
         this.editarItemModal = true
-
       },
       agregarItemPrestado () {
         var html1 = '<item></item>'
@@ -749,16 +791,20 @@
                             id_subcategoria: {id: responseGET.data.id_subcategoria.id}
                           })
                             .then((responseGET) => {
-                              // asd
+                              this.initialize()
+                              this.$refs.txtRut.reset()
+                              this.$refs.txtMotivo.reset()
+                              this.itemsASalir = []
+                              this.cargarItems()
+                              this.alertItem = false
+                              this.dialogAdd = false // cerrar el modal
+                              this.text = 'Se ha generado correctamente'
+                              this.snackbar = true
                             })
                         })
                     })
                 }
                 // this.items.push(response.data)// LLenado del array "items"
-                this.initialize()
-                this.dialogAdd = false // cerrar el modal
-                this.text = 'Se ha generado correctamente'
-                this.snackbar = true
               })
           }
       },
@@ -790,7 +836,11 @@
         this.eliminarItemModalTable = false
       },
       clearAddModal () {
-        this.$refs.fRealizarSalida.reset()
+        // this.$refs.fRealizarSalida.reset()
+        this.$refs.txtRut.reset()
+        this.$refs.txtMotivo.reset()
+        this.cargarItems()
+        this.itemsASalir = []
         this.alertItem = false
         this.dialogAdd = false
       },
@@ -800,6 +850,7 @@
       clearAgregarItemModal () {
         this.agregarItem = false
         this.$refs.fagregarItem.reset()
+        this.stockActual = ''
       },
       clearEditarItemModal () {
         this.editarItemModal = false

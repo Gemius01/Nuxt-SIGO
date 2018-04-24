@@ -129,7 +129,10 @@
               { title: 'Ingresar Marca', to: '/marca' },
               { title: 'Proveedor Nacional', to: '/proveedorN' },
               { title: 'Proveedor Extranjero', to: '/proveedorE' },
-              { title: 'Registrar Merma', to: '/merma' }
+              { title: 'Registrar Merma', to: '/merma' },
+              { title: 'Empresa Cliente', to: '/e_cliente' },
+              { title: 'Bodega', to: '/bodega' },
+              { title: 'Activos', to: '/stockItems' }
             ]
           },
           {
