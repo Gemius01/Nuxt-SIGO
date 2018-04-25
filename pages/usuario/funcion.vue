@@ -119,7 +119,7 @@
 	<!-- Tabla -->
     <v-card>
     <v-card-title>
-        <h1>Modulos</h1>
+        <h1>Función</h1>
         <v-spacer></v-spacer>
         <v-text-field
           append-icon="search"

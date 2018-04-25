@@ -113,7 +113,7 @@
             active: false,
             items: [
               // { title: 'Tipo', to: '/tipo' },
-              { title: 'Crear Orden de Compra', to: '/ordenCompra' }
+              { title: 'Crear Servicio', to: '/servicio' }
             ]
           },
           {
@@ -121,7 +121,7 @@
             title: 'Contratos',
             active: false,
             items: [
-              { title: 'Mayor Solicitante', to: '/reporteMayorSolicitante' }
+              { title: 'Crear Contrato', to: '/contrato' }
             ]
           },
           {
@@ -129,7 +129,7 @@
             title: 'Usuarios',
             active: false,
             items: [
-              { title: 'Mayor Solicitante', to: '/reporteMayorSolicitante' }
+              { title: 'Crear Usuario', to: '/usuario' }
             ]
           },
           {
