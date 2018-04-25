@@ -12,8 +12,17 @@
           <v-container grid-list-md>
             <v-layout wrap>
             	<v-flex xs12>
-            		<v-text-field label="Nombre" :counter="20" id="nombreModulo"></v-text-field>
+            		<v-text-field label="Nombre Función" :counter="20" id="nombreFuncion"></v-text-field>
             	</v-flex>
+              <v-flex xs12>
+                <v-select label="Nombre Módulo" :items="modulos" v-model="selectModulo" item-id="id" item-text="nombre" id="nombreModulo"></v-select>
+              </v-flex>
+              <v-flex xs12>
+                <v-text-field label="URL" :counter="20" id="url" placeholder="/modulo/ejemplo"></v-text-field>
+              </v-flex>
+              <v-flex xs12>
+                <v-select label="Tabla Principal" :items="tablas" item-id="nombre" item-text="nombre" v-model="selectTabla" id="tablaPrincipal"></v-select>
+              </v-flex>
             </v-layout>
           </v-container>
         </v-card-text>
@@ -131,7 +140,7 @@
       </v-card-title>
     <v-data-table
       :headers="headers"
-      :items="modulos"
+      :items="funciones"
       :search="search"
       must-sort
       :pagination.sync="pagination"
@@ -184,7 +193,9 @@ import config from '../../config.vue'
 		        { text: 'Nombre', value: 'nombre', width: '33%', align: 'center' },
 		        { text: 'Opciones', sortable: false, width: '33%', align: 'center' }
 		    ],
+      funciones: [],
 			modulos: [],
+      tablas: [{nombre: 'Funcionario'}],
 			pagination: {},
 			search: '',
 			valid: true,
@@ -192,6 +203,8 @@ import config from '../../config.vue'
 			dialogEdit: false,
 			dialogDetail: false,
       dialogDelete: false,
+      selectModulo: 0,
+      selectTabla: '',
 			editedItem: { // prop temporal que guarda el objeto a editar o eliminar
 	        id: 0,
 	        nombre: ''
@@ -207,10 +220,19 @@ import config from '../../config.vue'
 		}),
     created () {
       this.initialize()
+      this.cargarModulos()
     },
 		methods: {
       initialize () { // Función que recarga los datos de la Tabla mediante request a la API REST
         axios.get(config.API_LOCATION + '/user/funcion/') // petición GET a Tipo para traer a todos los objetos "tipo"
+          .then((response) => {
+            this.funciones = response.data
+          })
+          .catch(e => {
+          })
+      },
+      cargarModulos () {
+        axios.get(config.API_LOCATION + '/user/modulo/') // petición GET a Tipo para traer a todos los objetos "tipo"
           .then((response) => {
             this.modulos = response.data
           })
@@ -218,8 +240,17 @@ import config from '../../config.vue'
           })
       },
 			agregarFuncion (e) {
-        var nombre = e.target.elements.nombreModulo.value
-        axios.post(config.API_LOCATION + '/user/funcion/', { nombre: nombre }) // petición GET a Tipo para traer a todos los objetos "tipo"
+        var funcion = e.target.elements.nombreFuncion.value
+        var modulo = this.selectModulo.id
+        var url = e.target.elements.url.value
+        var tablaPrincipal = this.selectTabla.nombre
+        axios.post(config.API_LOCATION + '/user/funcion/', { 
+          nombre: funcion,
+          id_modulo: {id: modulo},
+          tabla_main: tablaPrincipal,
+          acceso: url,
+          mantencion: false
+         }) // petición GET a Tipo para traer a todos los objetos "tipo"
           .then((response) => {
             this.initialize()
             this.dialogAdd = false
