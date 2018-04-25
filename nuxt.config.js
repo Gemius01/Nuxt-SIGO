@@ -26,7 +26,7 @@ module.exports = {
   /*
   ** Build configuration
   */
-  /*
+
   build: {
     vendor: [
       '~/plugins/vuetify.js'
@@ -34,7 +34,7 @@ module.exports = {
     extractCSS: true,
     /*
     ** Run ESLint on save
-    
+    */
     extend (config, ctx) {
       if (ctx.isDev && ctx.isClient) {
         config.module.rules.push({
@@ -45,5 +45,5 @@ module.exports = {
       }
     }
   }
-  */
+
 }
