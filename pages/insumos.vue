@@ -84,7 +84,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" flat @click="clearAddModal">Cancelar</v-btn>
-          <v-btn color="blue darken-1" type="submit" flat >Guardar</v-btn>
+          <v-btn  id="myBtn" @click="Enable" color="blue darken-1" type="submit" flat >Guardar</v-btn>
         </v-card-actions>
       </v-card>
       </v-form>
@@ -463,7 +463,16 @@
           .catch(e => {
           })
       },
+       Disable () { // funcion para llenar los items
+        document.getElementById("myBtn").disabled = true;
+        console.log('desactivado')
+      },
+       Enable () { // funcion para llenar los items
+        document.getElementById("myBtn").disabled = false;
+        console.log('activado')
+      },
       agregarInsumos (e) { // función para agregar un nuevo Tipo
+        document.getElementById("myBtn").disabled = true;
         var nombre = this.addItem.nombre
         var modelo = this.addItem.modelo
         var stockCri = this.addItem.stockCritico
@@ -475,6 +484,7 @@
         console.log(unidadmedida)
         console.log(subCategoria)
         if (this.$refs.fAgregarInsumos.validate()) {
+          this.Enable()
           axios.post(config.API_LOCATION + '/bodega/item/', { // petición POST a Tipo para agregar
             nombre: '' + nombre + '',
             id_marca: { id: marca },
@@ -494,8 +504,11 @@
               this.selectValidado = false
               this.selectValidado2 = false
               this.selectValidado3 = false
+              this.Enable()
+
             })
         }
+        this.Enable()
       },
       editInsumo (e) { // función para editar la Subcategoría
         var id = this.editedItem.id// obtener id del objeto que se desea editar formulario

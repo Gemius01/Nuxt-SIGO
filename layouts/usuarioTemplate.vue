@@ -113,7 +113,7 @@
             active: false,
             items: [
               // { title: 'Tipo', to: '/tipo' },
-              { title: 'Crear Servicio', to: '/servicio' }
+              { title: 'Crear Servicio', to: '/usuario/servicios' }
             ]
           },
           {
