@@ -121,7 +121,7 @@
             title: 'Contratos',
             active: false,
             items: [
-              { title: 'Crear Contrato', to: '/contrato' }
+              { title: 'Crear Contrato', to: '/usuario/contrato' }
             ]
           },
           {
