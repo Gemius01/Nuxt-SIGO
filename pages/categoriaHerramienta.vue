@@ -117,7 +117,7 @@
               <v-list-tile-title>{{ detailItem.nombre }}</v-list-tile-title>
             </v-list-tile>
            </v-list>
-        
+
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" flat @click.native="cerrarModalDetail">Cerrar</v-btn>
