@@ -1,6 +1,7 @@
 <template>
 	<div>
      <!-- SnackBar (mensaje de Success)-->
+    
  <v-snackbar
       :timeout="timeout"
       :color="color"
@@ -12,10 +13,13 @@
       <v-btn dark flat @click.native="snackbar = false">Cerrar</v-btn>
     </v-snackbar>
     <!-- Fin de SnackBar-->
+            <v-btn color="primary" dark slot="activator" @click="pruebas">Prueba</v-btn>
     <v-layout >
       <v-dialog v-model="dialogAdd" fullscreen hide-overlay transition="dialog-bottom-transition">
         <v-btn color="primary" dark slot="activator">Crear nuevo Contrato</v-btn>
+
         <v-card>
+           <v-form @submit.prevent="agregarContrato" v-model="valid" ref="fAgregarHerramientas" lazy-validation>
           <v-toolbar dark color="primary">
             <v-btn icon @click.native="cerrarModalAgregar" dark>
               <v-icon>close</v-icon>
@@ -23,7 +27,7 @@
             <!--<v-toolbar-title>Settings</v-toolbar-title>-->
             <v-spacer></v-spacer>
             <v-toolbar-items>
-              <v-btn dark flat @click.native="dialog = false">Guardar</v-btn>
+              <v-btn dark flat type="submit">Guardar</v-btn>
             </v-toolbar-items>
           </v-toolbar>
           <v-container grid-list-md>
@@ -46,29 +50,61 @@
                       <v-card  class="mb-5">
                         <v-container grid-list-md>
                           <v-layout wrap>
-                            <v-flex xs4>
-                              <v-text-field label="RUT" v-model="rutEmpresa"></v-text-field>
-                            </v-flex>
-                            <v-flex xs4>
-                              <v-text-field label="Nombre" v-model="nombreEmpresa"></v-text-field>
-                            </v-flex>
-                            <v-flex xs4>
-                              <v-text-field label="Fono" v-model="fonoEmpresa"></v-text-field>
-                            </v-flex>
                             <v-flex xs12>
-                              <v-text-field label="Dirección" v-model="direccionEmpresa"></v-text-field>
+                            <p><strong>Empresa</strong></p>
                             </v-flex>
-                            <v-flex xs12>
-
-                              <v-divider></v-divider>
-                               <p>Datos Contacto</p>
+                            <v-flex xs4>
+                              <v-text-field label="RUT" v-model="rutEmpresa" id="rutEmpresa"></v-text-field>
                             </v-flex>
-                             <v-flex xs6>
-                              <v-text-field label="Nombre"></v-text-field>
+                            <v-flex xs4>
+                              <v-text-field label="Nombre" v-model="nombreEmpresa" id="nombreEmpresa"></v-text-field>
+                            </v-flex>
+                            <v-flex xs4>
+                              <v-text-field label="Fono" v-model="fonoEmpresa" id="fonoEmpresa"></v-text-field>
                             </v-flex>
                             <v-flex xs6>
-                              <v-text-field label="E-mail"></v-text-field>
+                              <v-text-field label="Dirección" v-model="direccionEmpresa" id="direccionEmpresa"></v-text-field>
                             </v-flex>
+                            <v-flex xs12>
+                              <v-divider></v-divider>
+                               <p><strong>Datos Contacto</strong></p>
+                            </v-flex>
+                             <v-flex xs6>
+                              <v-text-field label="Nombre" id="nombreContactoEmpresa"></v-text-field>
+                            </v-flex>
+                            <v-flex xs6>
+                              <v-text-field label="E-mail" id="emailContactoEmpresa"></v-text-field>
+                            </v-flex>
+                            <v-flex xs12>
+                              <v-divider></v-divider>
+                               <p><strong>Configuración Empresa</strong></p>
+                            </v-flex>
+                            <v-flex xs6>
+                              <v-flex xs12>
+                              
+                               <p><strong>Color Primario</strong></p>
+                            </v-flex>
+                               <no-ssr>
+                                 <swatches-picker v-model="colorPrimario"></swatches-picker>
+                               </no-ssr>
+                            </v-flex>
+                            <v-flex xs6>
+                              <v-flex xs12>
+                              
+                               <p><strong>Color Secundario</strong></p>
+                            </v-flex>
+                               <no-ssr>
+                                 <swatches-picker v-model="colorSecundario"></swatches-picker>
+                               </no-ssr>
+                            </v-flex>
+                            <v-flex xs6>
+                             <p><strong>Logo 1</strong></p>
+                            <input type="file" accept="image/*"></input>
+                          </v-flex>
+                          <v-flex xs6>
+                             <p><strong>Logo 2</strong></p>
+                            <input type="file" accept="image/*" @change="changePrueba"></input>
+                          </v-flex>
                           </v-layout>
                         </v-container>
                       </v-card>
@@ -79,23 +115,47 @@
                         <v-container grid-list-md>
                           <v-layout wrap>
                             <v-flex xs4>
-                              <v-text-field label="RUT Administrador"></v-text-field>
+                              <v-text-field label="RUT Administrador" id="rutAdministrador"></v-text-field>
                             </v-flex>
                             <v-flex xs4>
-                              <v-text-field label="Nombres"></v-text-field>
+                              <v-text-field label="Primer Nombre" id="primerNombre"></v-text-field>
                             </v-flex>
                             <v-flex xs4>
-                              <v-text-field label="Apellidos"></v-text-field>
+                              <v-text-field label="Segundo Nombre" id="segundoNombre"></v-text-field>
+                            </v-flex>
+                            <v-flex xs4>
+                              <v-text-field label="Primer Apellido" id="primerApellido"></v-text-field>
+                            </v-flex>
+                            <v-flex xs4>
+                              <v-text-field label="Segundo Apellido" id="segundoApellido"></v-text-field>
                             </v-flex>
                             <v-flex xs6>
-                              <v-text-field label="Contraseña"></v-text-field>
+                              <v-text-field label="Contraseña" id="contraseña"></v-text-field>
                             </v-flex>
                             <v-flex xs6>
-                              <v-text-field label="Repetir Contraseña"></v-text-field>
+                              <v-text-field label="Repetir Contraseña" id="confirmarContraseña"></v-text-field>
                             </v-flex>
+                            <v-flex xs6>
+                              <v-text-field label="Dirección Funcionario" id="direccionFuncionario"></v-text-field>
+                            </v-flex>
+                            <v-flex xs6>
+                              <v-text-field label="Ciudad" id="ciudad"></v-text-field>
+                            </v-flex>
+                            <v-flex xs6>
+                              <v-text-field label="Fono" id="fonoFuncionario"></v-text-field>
+                            </v-flex>
+                            <v-flex xs6>
+                              <v-text-field label="Movil" id="movilFuncionario"></v-text-field>
+                            </v-flex>
+                            <v-flex xs6>
+                              <v-text-field label="E-Mail" id="emailFuncionario"></v-text-field>
+                            </v-flex>
+                            <!--
+                                
                              <v-flex xs6>
                               <v-text-field label="Cargo"></v-text-field>
                             </v-flex>
+                          -->
                           </v-layout>
                         </v-container>
                       </v-card>
@@ -115,21 +175,21 @@
                               label="Buscar"
                               single-line
                               hide-details
-                              v-model="search"
+                              v-model="search1"
                             ></v-text-field>
                           </v-card-title>
                           <v-data-table
                             :headers="headersTablaServicios"
                             :items="servicios"
-                            :search="search"
+                            :search="search1"
                             must-sort
                             :pagination.sync="paginationServicios"
                             class="elevation-1"
                           >
                             <template @click="prueba" slot="items" slot-scope="props" color="green">
                               <td class="text-xs-center" @click="prueba" >{{ props.item.id }}</td>
-                              <td class="text-xs-center" @click="prueba">{{ props.item.nombre }}</td>
-                              <td class="text-xs-center" @click="prueba">{{ props.item.precio }}</td>
+                              <td class="text-xs-center" @click="prueba">{{ props.item.id_servicio.nombre }}</td>
+                              <td class="text-xs-center" @click="prueba">{{ props.item.id_servicio.precio }}</td>
                               <td class="justify-center layout px-0">
                               <v-tooltip top>
                                 <v-btn icon slot="activator" class="mx-0" @click="modalDetalle(props.item)" >
@@ -159,21 +219,21 @@
                               label="Buscar"
                               single-line
                               hide-details
-                              v-model="search"
+                              v-model="search2"
                             ></v-text-field>
                           </v-card-title>
                           <v-data-table
                             :headers="headersTablaServicios"
                             :items="serviciosCarro"
-                            :search="search"
+                            :search="search2"
                             must-sort
                             :pagination.sync="paginationServicios"
                             class="elevation-1"
                           >
                             <template @click="prueba" slot="items" slot-scope="props" color="green">
                               <td class="text-xs-center" @click="prueba" >{{ props.item.id }}</td>
-                              <td class="text-xs-center" @click="prueba">{{ props.item.nombre }}</td>
-                              <td class="text-xs-center" @click="prueba">{{ props.item.precio }}</td>
+                              <td class="text-xs-center" @click="prueba">{{ props.item.id_servicio.nombre }}</td>
+                              <td class="text-xs-center" @click="prueba">{{ props.item.id_servicio.precio }}</td>
                               <td class="justify-center layout px-0">
                               <v-tooltip top>
                                 <v-btn icon slot="activator" class="mx-0" @click="modalDetalle(props.item)" >
@@ -185,7 +245,7 @@
                                 <v-btn icon slot="activator" class="mx-0" @click="quitarCarro(props.item)" >
                                   <v-icon color="red">remove_shopping_cart</v-icon>
                                 </v-btn>
-                                <span>Añadir</span>
+                                <span>Quitar</span>
                                 </v-tooltip>
                               </td>
                             </template>
@@ -225,6 +285,7 @@
 
             </v-layout>
           </v-container>
+        </v-form>
         </v-card>
       </v-dialog>
     </v-layout>
@@ -483,8 +544,11 @@
 <script>
 import axios from 'axios'
 import config from '../../config.vue'
+import { Swatches } from 'vue-color'
 	export default {
-    components: { config },
+     components: {
+      'swatches-picker': Swatches
+    },
     layout: 'usuarioTemplate',
 		data: () => ({
 			headers: [
@@ -509,11 +573,16 @@ import config from '../../config.vue'
       reactive: false,
       // Fin Date Picker
       tablas: [{tabla_main: 'Funcionario'}],
+      colorPrimario: {hex: ''},
+      colorSecundario: {hex: ''},
 			pagination: {},
       paginationServicios: {},
       totalServicio: 0,
-			search: '',
+      search: '',
+			search1: '',
+      search2: '',
 			valid: true,
+      imagen: '',
 			dialogAdd: false,
 			dialogEdit: false,
 			dialogDetail: false,
@@ -574,21 +643,26 @@ import config from '../../config.vue'
         }
 		}),
     created () {
-      this.initialize()
+      // this.initialize()
       this.cargarModulos()
       this.cargarServicios()
     },
 		methods: {
       initialize () { // Función que recarga los datos de la Tabla mediante request a la API REST
-        axios.get(config.API_LOCATION + '/user/funcion/') // petición GET a Tipo para traer a todos los objetos "tipo"
+        axios.get(config.API_LOCATION + '/user/contrato/') // petición GET a Tipo para traer a todos los objetos "tipo"
           .then((response) => {
             this.funciones = response.data
           })
           .catch(e => {
           })
       },
-      prueba () {
-        console.log('asd')
+      changePrueba (e) {
+        console.log(e.target.value)
+      },
+      pruebas () {
+        console.log(this.colorPrimario)
+        console.log(this.colorSecundario)
+        console.log(this.imagen)
       },
       cargarModulos () {
         axios.get(config.API_LOCATION + '/user/modulo/') // petición GET a Tipo para traer a todos los objetos "tipo"
@@ -599,7 +673,7 @@ import config from '../../config.vue'
           })
       },
       cargarServicios () {
-        axios.get(config.API_LOCATION + '/user/servicio/') // petición GET a Tipo para traer a todos los objetos "tipo"
+        axios.get(config.API_LOCATION + '/user/d_servicio/') // petición GET a Tipo para traer a todos los objetos "tipo"
           .then((response) => {
             this.servicios = response.data
           })
@@ -607,29 +681,143 @@ import config from '../../config.vue'
           })
       },
 			agregarContrato (e) {
-        var funcion = e.target.elements.nombreFuncion.value
-        var modulo = this.selectModulo.id
-        var url = e.target.elements.url.value
-        var tablaPrincipal = this.selectTabla.tabla_main
-        axios.post(config.API_LOCATION + '/user/funcion/', { 
-          nombre: funcion,
-          id_modulo: {id: modulo},
-          tabla_main: tablaPrincipal,
-          acceso: url,
-          mantencion: false
-         }) // petición GET a Tipo para traer a todos los objetos "tipo"
+        console.log(e)
+
+        // E_Cliente
+        var rut = document.getElementById('rutEmpresa').value
+        var nombre = document.getElementById('nombreEmpresa').value
+        var fono = document.getElementById('fonoEmpresa').value
+        var direccion = document.getElementById('direccionEmpresa').value
+        var contacto = document.getElementById('nombreContactoEmpresa').value
+        var email = document.getElementById('emailContactoEmpresa').value
+        
+
+        // Funcionario
+        var rutFuncionario = document.getElementById('rutAdministrador').value
+        var nombreFuncionario1 = document.getElementById('primerNombre').value
+        var nombreFuncionario2 = document.getElementById('segundoNombre').value
+        var apellido_p = document.getElementById('primerApellido').value
+        var apellido_m = document.getElementById('segundoApellido').value
+        var direccionFuncionario = document.getElementById('direccionFuncionario').value
+        var ciudad = document.getElementById('ciudad').value
+        var fono = document.getElementById('fonoFuncionario').value
+        var movil = document.getElementById('movilFuncionario').value
+        var emailFuncionario = document.getElementById('emailFuncionario').value
+        var password = document.getElementById('confirmarContraseña').value
+        // var e-cliente = 
+
+        // conf cliente
+        
+        var color_p = this.colorPrimario.hex
+        var color_s = this.colorSecundario.hex
+        var logo_1 =  ''
+        var logo_2 =  ''
+
+       
+        axios.post(config.API_LOCATION + '/user/e_cliente/', { //POST a Empresa Cliente
+          rut: rut,
+          nombre: nombre,
+          fono: fono,
+          direccion: direccion,
+          contacto: contacto,
+          email: email
+         })
           .then((response) => {
-            this.initialize()
-            this.dialogAdd = false
-            this.color = 'green'
-            this.text = 'Se ha agregado una Función'
-            this.snackbar = true
+            /*
+            calculo valor membresia
+            var valor_memb = 0;
+             for (var i = 0; i < this.serviciosCarro.length; i++){
+              valor_memb = 
+             }
+             */
+             axios.post(config.API_LOCATION + '/user/contrato/', { // POST a contrato 
+              id_e_cliente: {rut: response.data.rut},
+              valor_memb: 1000,
+              fecha: '',
+              estado: true,
+              
+             }) 
+             .then((response) => {
+
+              for (var i = 0; i < this.serviciosCarro.length ; i++) {
+                axios.post(config.API_LOCATION + '/user/anexo/', { // POST a anexo 
+                  id_contrato: {id: response.data.id},
+                  id_servicio: {id: this.serviciosCarro[i].id_servicio.id},
+                  fecha_inicio: '',
+                  fecha_termino: '',
+                  fecha_termino: '',
+                  
+                 }) 
+                 .then((responseAnexo) => {
+                  console.log('entre responseAnexo')
+                  console.log(responseAnexo)
+                  axios.post(config.API_LOCATION + '/user/cupo/', { // POST a configuracion Cliente 
+                    id_anexo: {id: responseAnexo.data.id},
+                    id_d_servicio: {id: this.serviciosCarro[i].id},
+                    lleno: false
+                  }) 
+                  .then((responseCupo) => {
+                    console.log('entre responseCupo')
+                  console.log(responseCupo)
+                  })
+                  .catch(e => {
+                  })
+                  
+                 })
+                 .catch(e => {
+                 })
+               }
+
+             })
+             .catch(e => {
+             })
+            
+            axios.post(config.API_LOCATION + '/user/conf_e_cliente/', { // POST a configuracion Cliente 
+              color_p: color_p,
+              color_s: color_s,
+              logo_1: logo_1,
+              logo_2: logo_2,
+              id_e_cliente: {rut: response.data.rut}
+            }) 
+            .then((response) => {
+
+            })
+            .catch(e => {
+            })
+          
+            axios.post(config.API_LOCATION + '/user/funcionario/', { // POST A Funcionario
+              rut: rutFuncionario,
+              nombre_1: nombreFuncionario1,
+              nombre_2: nombreFuncionario2,
+              apellido_p: apellido_p,
+              apellido_m: apellido_m,
+              email: emailFuncionario,
+              fono: fono,
+              movil: movil,
+              direccion: direccionFuncionario,
+              id_e_cliente: {rut: response.data.rut}
+             }) 
+              .then((responseFuncionario) => {
+                 axios.post(config.API_LOCATION + '/user/usuario/', { // POST a configuracion Cliente 
+                    id_funcionario: {rut: responseFuncionario.data.rut},
+                    password: password,
+                    estado: true,
+                  }) 
+                  .then((response) => {
+
+                  })
+                  .catch(e => {
+                  })
+              })
+              .catch(e => {
+              })
           })
           .catch(e => {
           })
+          
 			},
 			editarFuncion (e) {
-        axios.put(config.API_LOCATION + '/user/funcion/'+ this.editedItem.id +'', this.editedItem) // petición GET a Tipo para traer a todos los objetos "tipo"
+        axios.put(config.API_LOCATION + '/user/funcion/'+ this.editedItem.id +'', this.editedItem) 
           .then((response) => {
             this.initialize()
             this.dialogEdit = false
@@ -642,7 +830,7 @@ import config from '../../config.vue'
 			},
       ponerEnMantencion () {
         this.mantencionItem.mantencion = true
-        axios.put(config.API_LOCATION + '/user/funcion/'+ this.mantencionItem.id +'', this.mantencionItem) // petición GET a Tipo para traer a todos los objetos "tipo"
+        axios.put(config.API_LOCATION + '/user/funcion/'+ this.mantencionItem.id +'', this.mantencionItem)
           .then((response) => {
             this.initialize()
             this.dialogMantencion = false
@@ -665,13 +853,19 @@ import config from '../../config.vue'
           .catch(e => {
           })
       },
+      prueba () {
+        console.log(this.serviciosCarro)
+        for (var i = 0; i < this.serviciosCarro.length; i++) {
+            console.log('entre')
+        }
+      },
       agregarCarro (item) {
         console.log(item)
         this.serviciosCarro.push(item)
         var indexArray = this.servicios.findIndex(x => x.id === item.id)
         console.log(indexArray)
         this.servicios.splice(indexArray, 1)
-        this.totalServicio += item.precio
+        this.totalServicio += item.id_servicio.precio
       },
       quitarCarro (item) {
         console.log(item)
@@ -679,7 +873,7 @@ import config from '../../config.vue'
         var indexArray = this.serviciosCarro.findIndex(x => x.id === item.id)
         console.log(indexArray)
         this.serviciosCarro.splice(indexArray, 1)
-        this.totalServicio -= item.precio
+        this.totalServicio -= item.id_servicio.precio
       },
       modalDelete (item) {
         this.deleteItem = item
