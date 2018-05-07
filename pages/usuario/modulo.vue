@@ -20,7 +20,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" @click="clearAddModal" flat>Cancelar</v-btn>
-          <v-btn color="blue darken-1" type="submit" flat >Guardar</v-btn>
+          <v-btn color="blue darken-1" type="submit" flat :disabled="false" id="buttonAgregar">Guardar</v-btn>
         </v-card-actions>
       </v-card>
       </v-form>
@@ -235,10 +235,12 @@ import validaciones from '../../validaciones.vue'
 			agregarModulo (e) {
         var nombre = e.target.elements.nombreModulo.value
 				if (this.$refs.fAgregarModulo.validate()) {
+					document.getElementById("buttonAgregar").disabled = true
 					axios.post(config.API_LOCATION + '/user/modulo/', { nombre: nombre }) // petición GET a Tipo para traer a todos los objetos "tipo"
 	          .then((response) => {
 	            this.initialize()
-	            this.dialogAdd = false
+							document.getElementById("buttonAgregar").disabled = false
+							this.dialogAdd = false
 							this.$refs.fAgregarModulo.reset()
 	          })
 	          .catch(e => {
