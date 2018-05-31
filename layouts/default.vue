@@ -55,6 +55,17 @@
         <v-btn icon>
           <v-icon>notifications</v-icon>
         </v-btn>
+        <v-menu offset-y>
+        <v-btn  icon slot="activator"> <v-icon>account_circle</v-icon></v-btn>
+        <v-list>
+          <v-list-tile to="/userProfile" >
+            <v-list-tile-title >Perfil</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile @click="logOut">
+            <v-list-tile-title >Cerrar Sesión</v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
       </div>
     </v-toolbar>
     <v-content>
@@ -84,6 +95,7 @@
 </template>
 
 <script>
+  import Cookie from 'js-cookie'
   export default {
     data () {
       return {
@@ -160,6 +172,13 @@
     },
     methods: {
       prueba () {
+      },
+      logOut() {
+        Cookie.remove('auth')
+        Cookie.remove('rol')
+        //var TOKEN_KEY = "jwtToken"
+        //localStorage.removeItem(TOKEN_KEY)
+        window.location.replace('http://localhost:3000/login')
       }
     }
   }
