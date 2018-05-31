@@ -1,4 +1,4 @@
-<template>
+  <template>
 	<div>
      <!-- SnackBar (mensaje de Success)-->
     
@@ -65,10 +65,15 @@
                             <v-flex xs6>
                               <v-text-field label="Dirección" v-model="direccionEmpresa" id="direccionEmpresa"></v-text-field>
                             </v-flex>
+                            <v-flex xs6>
+                              <v-select item-value="id" item-text="nombre" :items="ciudades" v-model="selectCiudad" label="Ciudad" single-line
+                              ></v-select>
+                            </v-flex>
                             <v-flex xs12>
                               <v-divider></v-divider>
                                <p><strong>Datos Contacto</strong></p>
                             </v-flex>
+
                              <v-flex xs6>
                               <v-text-field label="Nombre" id="nombreContactoEmpresa"></v-text-field>
                             </v-flex>
@@ -139,7 +144,8 @@
                               <v-text-field label="Dirección Funcionario" id="direccionFuncionario"></v-text-field>
                             </v-flex>
                             <v-flex xs6>
-                              <v-text-field label="Ciudad" id="ciudad"></v-text-field>
+                              <v-select item-value="id" item-text="nombre" :items="ciudades" v-model="selectCiudadFuncionario" label="Ciudad" single-line
+                              ></v-select>
                             </v-flex>
                             <v-flex xs6>
                               <v-text-field label="Fono" id="fonoFuncionario"></v-text-field>
@@ -151,7 +157,6 @@
                               <v-text-field label="E-Mail" id="emailFuncionario"></v-text-field>
                             </v-flex>
                             <!--
-                                
                              <v-flex xs6>
                               <v-text-field label="Cargo"></v-text-field>
                             </v-flex>
@@ -188,8 +193,8 @@
                           >
                             <template @click="prueba" slot="items" slot-scope="props" color="green">
                               <td class="text-xs-center" @click="prueba" >{{ props.item.id }}</td>
-                              <td class="text-xs-center" @click="prueba">{{ props.item.id_servicio.nombre }}</td>
-                              <td class="text-xs-center" @click="prueba">{{ props.item.id_servicio.precio }}</td>
+                              <td class="text-xs-center" @click="prueba">{{ props.item.nombre }}</td>
+                              <td class="text-xs-center" @click="prueba">{{ props.item.precio }}</td>
                               <td class="justify-center layout px-0">
                               <v-tooltip top>
                                 <v-btn icon slot="activator" class="mx-0" @click="modalDetalle(props.item)" >
@@ -232,8 +237,8 @@
                           >
                             <template @click="prueba" slot="items" slot-scope="props" color="green">
                               <td class="text-xs-center" @click="prueba" >{{ props.item.id }}</td>
-                              <td class="text-xs-center" @click="prueba">{{ props.item.id_servicio.nombre }}</td>
-                              <td class="text-xs-center" @click="prueba">{{ props.item.id_servicio.precio }}</td>
+                              <td class="text-xs-center" @click="prueba">{{ props.item.nombre }}</td>
+                              <td class="text-xs-center" @click="prueba">{{ props.item.precio }}</td>
                               <td class="justify-center layout px-0">
                               <v-tooltip top>
                                 <v-btn icon slot="activator" class="mx-0" @click="modalDetalle(props.item)" >
@@ -263,7 +268,93 @@
                     <v-stepper-content step="4">
                       <v-card class="mb-5">
                         <v-flex xs12>
-                          <v-date-picker v-model="picker" :landscape="landscape" :reactive="reactive"></v-date-picker>
+                          <v-layout row wrap>
+                          <v-spacer></v-spacer>
+                          <v-flex xs3>
+                          <v-text-field
+                            id="diaPago"
+                            type="number"
+                            label="Día Pago"
+                          ></v-text-field>
+                        </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <v-dialog
+                              ref="dialogInicio"
+                              v-model="modalInicio"
+                              :return-value.sync="dateInicio"
+                              persistent
+                              lazy
+                              full-width
+                              width="290px"
+                            >
+                              <v-text-field
+                                slot="activator"
+                                v-model="dateInicio"
+                                label="Picker in dialog"
+                                prepend-icon="event"
+                                readonly
+                              ></v-text-field>
+                              <v-date-picker v-model="dateInicio" scrollable>
+                                <v-spacer></v-spacer>
+                                <v-btn flat color="primary" @click="modalInicio = false">Cancel</v-btn>
+                                <v-btn flat color="primary" @click="$refs.dialogInicio.save(dateInicio)">OK</v-btn>
+                              </v-date-picker>
+                            </v-dialog>
+                          </v-flex>
+                          <v-spacer></v-spacer>
+                                <v-spacer></v-spacer>
+                          <v-flex xs12 sm6 md4>
+                            <v-dialog
+                              ref="dialogTermino"
+                              v-model="modalTermino"
+                              :return-value.sync="dateTermino"
+                              persistent
+                              lazy
+                              full-width
+                              width="290px"
+                            >
+                              <v-text-field
+                                slot="activator"
+                                v-model="dateTermino"
+                                label="Picker in dialog"
+                                prepend-icon="event"
+                                readonly
+                              ></v-text-field>
+                              <v-date-picker v-model="dateTermino" scrollable>
+                                <v-spacer></v-spacer>
+                                <v-btn flat color="primary" @click="modalTermino = false">Cancel</v-btn>
+                                <v-btn flat color="primary" @click="$refs.dialogTermino.save(dateTermino)">OK</v-btn>
+                              </v-date-picker>
+                            </v-dialog>
+                          </v-flex>
+                          <v-spacer></v-spacer>
+                                <v-spacer></v-spacer>
+                          <v-flex xs12 sm6 md4>
+                            <v-dialog
+                              ref="dialogPago"
+                              v-model="modalPago"
+                              :return-value.sync="datePago"
+                              persistent
+                              lazy
+                              full-width
+                              width="290px"
+                            >
+                              <v-text-field
+                                slot="activator"
+                                v-model="datePago"
+                                label="Picker in dialog"
+                                prepend-icon="event"
+                                readonly
+                              ></v-text-field>
+                              <v-date-picker v-model="datePago" scrollable>
+                                <v-spacer></v-spacer>
+                                <v-btn flat color="primary" @click="modalPago = false">Cancel</v-btn>
+                                <v-btn flat color="primary" @click="$refs.dialogPago.save(datePago)">OK</v-btn>
+                              </v-date-picker>
+                            </v-dialog>
+                          </v-flex>
+                          <v-spacer></v-spacer>
+                        </v-layout>
                         </v-flex>
                       </v-card>
                       <v-btn flat @click.native="e1 = e1 - 1">Atrás</v-btn>
@@ -289,7 +380,7 @@
         </v-card>
       </v-dialog>
     </v-layout>
- 		 <!-- Dialog Agregar Funcion -->
+ 		<!-- Dialog Agregar Funcion -->
    
     <!-- Dialog Editar Funcion -->
        <v-dialog v-model="dialogEdit" max-width="500px">
@@ -325,53 +416,129 @@
     </v-form>
     </v-dialog>
     <!-- Fin Dialog Editar Funcion -->
-     <!-- Dialog Detalle Funcion -->
-        <v-dialog v-model="dialogDetail" max-width="500px">
-        <form @submit.prevent="">
-      <v-card>
-
-          <v-card-title><h1> Detalle de Funcion</h1></v-card-title>
+     <!-- Dialog Detalle Contrato -->
+     <v-layout row justify-center>
+      <v-dialog v-model="dialogdetailContrato" fullscreen hide-overlay transition="dialog-bottom-transition">
+        <v-btn slot="activator" color="primary" dark>Open Dialog</v-btn>
+        <v-card>
+          <v-toolbar dark color="primary">
+            <v-btn icon dark @click.native="dialogdetailContrato = false">
+              <v-icon>close</v-icon>
+            </v-btn>
+            <v-toolbar-title>Settings</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-toolbar-items>
+              <v-btn dark flat @click.native="dialogdetailContrato = false">Save</v-btn>
+            </v-toolbar-items>
+          </v-toolbar>
+          <v-tabs icons-and-text centered dark color="cyan">
+      <v-tabs-slider color="yellow"></v-tabs-slider>
+      <v-tab href="#tab-1">
+        Datos Empresa
+        <v-icon>description</v-icon>
+      </v-tab>
+      <v-tab href="#tab-2">
+        Usuarios
+        <v-icon>supervised_user_circle</v-icon>
+      </v-tab>
+      <v-tab href="#tab-3">
+        Pagos
+        <v-icon>credit_card</v-icon>
+      </v-tab>
+      <v-tab href="#tab-4">
+        Documentos
+        <v-icon>code</v-icon>
+      </v-tab>
+      <v-tab href="#tab-5">
+        Servicios
+        <v-icon>store</v-icon>
+      </v-tab>
+      <v-tab-item
+        :id="'tab-1'"
+      >
+        <v-card flat>
+          <h1>{{ detailEmpresa.id_e_cliente.nombre}}</h1>
           <v-divider></v-divider>
+           <v-flex xs6>
+              <v-list dense >
+                <v-list-tile class="hoverMouse">
+                <v-list-tile-title>RUT</v-list-tile-title>
+                <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+                <v-list-tile-title>{{ detailEmpresa.id_e_cliente.rut }}</v-list-tile-title>
+              </v-list-tile>
+              <v-list-tile class="hoverMouse">
+                <v-list-tile-title>Dirección</v-list-tile-title>
+                <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+                <v-list-tile-title>{{ detailEmpresa.id_e_cliente.direccion }}</v-list-tile-title>
+              </v-list-tile>
+              <v-list-tile class="hoverMouse">
+                <v-list-tile-title>Fono</v-list-tile-title>
+                <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+                <v-list-tile-title>{{ detailEmpresa.id_e_cliente.fono }}</v-list-tile-title>
+              </v-list-tile>
+              <v-list-tile class="hoverMouse">
+                <v-list-tile-title>E-Mail</v-list-tile-title>
+                <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+                <v-list-tile-title>{{ detailEmpresa.id_e_cliente.email }}</v-list-tile-title>
+              </v-list-tile>
+              <v-list-tile class="hoverMouse">
+                <v-list-tile-title>Contacto</v-list-tile-title>
+                <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
+                <v-list-tile-title>{{ detailEmpresa.id_e_cliente.contacto }}</v-list-tile-title>
+              </v-list-tile>
+            </v-list>
+          </v-flex>
+          <v-divider></v-divider>
+          <h1>Configuración Empresa</h1>
+          <v-flex xs6>
           <v-list dense >
-              <v-list-tile class="hoverMouse">
-              <v-list-tile-title>ID</v-list-tile-title>
-              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
-              <v-list-tile-title>{{ detailItem.id }}</v-list-tile-title>
-            </v-list-tile>
-            <v-list-tile class="hoverMouse">
-              <v-list-tile-title>Nombre</v-list-tile-title>
-              <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
-              <v-list-tile-title>{{ detailItem.nombre }}</v-list-tile-title>
-            </v-list-tile>
-             <v-list-tile class="hoverMouse">
-                <v-list-tile-title>Módulo</v-list-tile-title>
+                <v-list-tile class="hoverMouse">
+                <v-list-tile-title>Color Primario</v-list-tile-title>
                 <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
-                <v-list-tile-title>{{ detailItem.id_modulo.nombre }}</v-list-tile-title>
+                <div :style="detailConfEmpresa.color_p" class="colorPrimario"></div>
               </v-list-tile>
               <v-list-tile class="hoverMouse">
-                <v-list-tile-title>Acceso</v-list-tile-title>
+                <v-list-tile-title>Color Secundario</v-list-tile-title>
                 <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
-                <v-list-tile-title>{{ detailItem.acceso }}</v-list-tile-title>
+                <div :style="detailConfEmpresa.color_s" class="colorPrimario"></div>
               </v-list-tile>
-              <v-list-tile class="hoverMouse">
-                <v-list-tile-title>Tabla Main</v-list-tile-title>
-                <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
-                <v-list-tile-title>{{ detailItem.tabla_main }}</v-list-tile-title>
-              </v-list-tile>
-              <v-list-tile class="hoverMouse">
-                <v-list-tile-title>Mantención</v-list-tile-title>
-                <v-list-tile-title class="text-lg-center">:</v-list-tile-title>
-                <v-list-tile-title>{{ detailItem.mantencion }}</v-list-tile-title>
-              </v-list-tile>
-          </v-list>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" flat @click.native="cerrarModalDetail">Cerrar</v-btn>
-        </v-card-actions>
-      </v-card>
-       </form>
-     </v-dialog>
-    <!-- Fin Dialog Detalle Funcion -->
+            </v-list>
+          </v-flex>
+        </v-card>
+      </v-tab-item>
+      <v-tab-item
+        :id="'tab-2'"
+      >
+        <v-card flat>
+          <v-card-text>lorem ipsum2</v-card-text>
+        </v-card>
+      </v-tab-item>
+      <v-tab-item
+        :id="'tab-3'"
+      >
+        <v-card flat>
+          <v-card-text>lorem ipsum2</v-card-text>
+        </v-card>
+      </v-tab-item>
+      <v-tab-item
+        :id="'tab-4'"
+      >
+        <v-card flat>
+          <v-card-text>lorem ipsum2</v-card-text>
+        </v-card>
+      </v-tab-item>
+      <v-tab-item
+        :id="'tab-5'"
+      >
+        <v-card flat>
+          <v-card-text>lorem ipsum5</v-card-text>
+        </v-card>
+      </v-tab-item>
+    </v-tabs>
+        </v-card>
+      </v-dialog>
+    </v-layout>
+    <!-- Fin Dialog Detalle Contrato -->
 
      <!-- Dialog Editar Funcion -->
        <v-dialog v-model="dialogDelete" max-width="500px">
@@ -493,7 +660,7 @@
       </v-card-title>
     <v-data-table
       :headers="headers"
-      :items="funciones"
+      :items="contratos"
       :search="search"
       must-sort
       :pagination.sync="pagination"
@@ -501,8 +668,8 @@
     >
       <template slot="items" slot-scope="props">
         <td class="text-xs-center">{{ props.item.id }}</td>
-        <td class="text-xs-center">{{ props.item.nombre }}</td>
-        <td class="text-xs-center">{{ props.item.id_modulo.nombre }}</td>
+        <td class="text-xs-center">{{ props.item.id_e_cliente.nombre }}</td>
+        <td class="text-xs-center">{{ props.item.valor_memb }}</td>
         <td class="justify-center layout px-0">
         <v-tooltip top>
           <v-btn icon slot="activator" class="mx-0" @click="modalDetalle(props.item)" >
@@ -516,12 +683,14 @@
           </v-btn>
           <span>Editar</span>
           </v-tooltip>
+          <!--
           <v-tooltip top>
           <v-btn icon slot="activator" class="mx-0" @click="modalMantencion(props.item)" >
             <v-icon color="orange darken-1">build</v-icon>
           </v-btn>
           <span>Mantención</span>
           </v-tooltip>
+        -->
           <v-tooltip top>
           <v-btn icon slot="activator" class="mx-0" @click="modalDelete(props.item)" >
             <v-icon color="red">delete</v-icon>
@@ -554,7 +723,7 @@ import { Swatches } from 'vue-color'
 			headers: [
 		        { text: 'ID', value: 'rut', sortable: true, width: '25%', align: 'center' },
 		        { text: 'Nombre', value: 'nombre', width: '25%', align: 'center' },
-            { text: 'Módulo', value: 'modulo', width: '25%', align: 'center' },
+            { text: 'Valor Membresia', value: 'valor_memb', width: '25%', align: 'center' },
 		        { text: 'Opciones', sortable: false, width: '25%', align: 'center' }
 		    ],
         headersTablaServicios: [
@@ -563,8 +732,9 @@ import { Swatches } from 'vue-color'
             { text: 'Precio', value: 'precio', width: '25%', align: 'center' },
             { text: 'Opciones', sortable: false, width: '25%', align: 'center' }
         ],
-      funciones: [],
+      contratos: [],
 			modulos: [],
+      ciudades: [],
       servicios: [],
       serviciosCarro: [],
       // Date Picker
@@ -578,6 +748,8 @@ import { Swatches } from 'vue-color'
 			pagination: {},
       paginationServicios: {},
       totalServicio: 0,
+      selectCiudad: 0,
+      selectCiudadFuncionario: 0,
       search: '',
 			search1: '',
       search2: '',
@@ -588,6 +760,7 @@ import { Swatches } from 'vue-color'
 			dialogDetail: false,
       dialogDelete: false,
       dialogMantencion: false,
+      dialogdetailContrato: false,
       selectModulo: 0,
       selectModuloEdit: {id: 0, nombre: ''},
       selectTablaEdit: 0,
@@ -608,6 +781,21 @@ import { Swatches } from 'vue-color'
       nombreEmpresa: '',
       fonoEmpresa: '',
       direccionEmpresa: '',
+      // Date Fecha Inicio
+      dateInicio: null,
+      menuInicio: false,
+      modalInicio: false,
+      menu2Inicio: false,
+      // Date Fecha Termino
+      dateTermino: null,
+      menuTermino: false,
+      modalTermino: false,
+      menu2Termino: false,
+      // Date Fecha Pago
+      datePago: null,
+      menuPago: false,
+      modalPago: false,
+      menu2Pago: false,
 
 			editedItem: { // prop temporal que guarda el objeto a editar o eliminar
 	        id: 0,
@@ -640,18 +828,83 @@ import { Swatches } from 'vue-color'
           mantencion: false,
           tabla_main: '',
           acceso: ''
-        }
+        },
+        detailEmpresa: {
+            id: 0,
+            id_e_cliente: {
+              rut: '',
+              nombre: '',
+              direccion: '',
+              fono: '',
+              email: '',
+              contacto: '',
+              id_ciudad: {
+                id: 0,
+                nombre: '',
+                id_region: {
+                  id: 0,
+                  nombre: '',
+                  id_pais: {
+                    id: 0,
+                    nombre: ''
+                }
+              
+                }
+              }
+            },
+            valor_memb: 0,
+            fecha: '',
+            estado: true,
+            dia_pago: 0,
+            fecha_termino: ''
+          },
+          detailConfEmpresa: {
+            id: 0,
+            color_p: '',
+            color_s: '',
+            logo_1: '',
+            logo_2: '',
+            id_e_cliente: {
+              rut: '',
+              nombre: '',
+              direccion: '',
+              fono: '',
+              email: '',
+              contacto: '',
+              id_ciudad: {
+                id: 0,
+                nombre: '',
+                id_region: {
+                  id: 0,
+                  nombre: '',
+                  id_pais: {
+                    id: 0,
+                    nombre: ''
+                  }
+                }
+              }
+            }
+          }
 		}),
     created () {
-      // this.initialize()
+      this.initialize()
       this.cargarModulos()
       this.cargarServicios()
+      this.cargarCiudades()
     },
 		methods: {
       initialize () { // Función que recarga los datos de la Tabla mediante request a la API REST
         axios.get(config.API_LOCATION + '/user/contrato/') // petición GET a Tipo para traer a todos los objetos "tipo"
           .then((response) => {
-            this.funciones = response.data
+            this.contratos = response.data
+          })
+          .catch(e => {
+          })
+      },
+      cargarCiudades () {
+        axios.get(config.API_LOCATION + '/bodega/ciudad/') // petición GET a Tipo para traer a todos los objetos "tipo"
+          .then((response) => {
+            this.ciudades = response.data
           })
           .catch(e => {
           })
@@ -660,9 +913,14 @@ import { Swatches } from 'vue-color'
         console.log(e.target.value)
       },
       pruebas () {
+        console.log(this.detailConfEmpresa)
+        /*
+        console.log(document.getElementById('fonoEmpresa').value)
         console.log(this.colorPrimario)
         console.log(this.colorSecundario)
         console.log(this.imagen)
+        console.log(this.ciudad)
+        */
       },
       cargarModulos () {
         axios.get(config.API_LOCATION + '/user/modulo/') // petición GET a Tipo para traer a todos los objetos "tipo"
@@ -673,7 +931,7 @@ import { Swatches } from 'vue-color'
           })
       },
       cargarServicios () {
-        axios.get(config.API_LOCATION + '/user/d_servicio/') // petición GET a Tipo para traer a todos los objetos "tipo"
+        axios.get(config.API_LOCATION + '/user/servicio/') // petición GET a Tipo para traer a todos los objetos "tipo"
           .then((response) => {
             this.servicios = response.data
           })
@@ -686,10 +944,11 @@ import { Swatches } from 'vue-color'
         // E_Cliente
         var rut = document.getElementById('rutEmpresa').value
         var nombre = document.getElementById('nombreEmpresa').value
-        var fono = document.getElementById('fonoEmpresa').value
+        var fonoEmpresa = document.getElementById('fonoEmpresa').value
         var direccion = document.getElementById('direccionEmpresa').value
         var contacto = document.getElementById('nombreContactoEmpresa').value
         var email = document.getElementById('emailContactoEmpresa').value
+        var id_ciudad = this.selectCiudad
         
 
         // Funcionario
@@ -699,28 +958,31 @@ import { Swatches } from 'vue-color'
         var apellido_p = document.getElementById('primerApellido').value
         var apellido_m = document.getElementById('segundoApellido').value
         var direccionFuncionario = document.getElementById('direccionFuncionario').value
-        var ciudad = document.getElementById('ciudad').value
-        var fono = document.getElementById('fonoFuncionario').value
+        var ciudad = this.selectCiudadFuncionario
+        var fonoFuncionario = document.getElementById('fonoFuncionario').value
         var movil = document.getElementById('movilFuncionario').value
         var emailFuncionario = document.getElementById('emailFuncionario').value
         var password = document.getElementById('confirmarContraseña').value
         // var e-cliente = 
 
         // conf cliente
-        
         var color_p = this.colorPrimario.hex
         var color_s = this.colorSecundario.hex
         var logo_1 =  ''
         var logo_2 =  ''
 
+        //Contrato
+        var diaPago = document.getElementById('diaPago').value
+
        
         axios.post(config.API_LOCATION + '/user/e_cliente/', { //POST a Empresa Cliente
           rut: rut,
           nombre: nombre,
-          fono: fono,
+          fono: fonoEmpresa,
           direccion: direccion,
           contacto: contacto,
-          email: email
+          email: email,
+          id_ciudad: {id: id_ciudad}
          })
           .then((response) => {
             /*
@@ -735,38 +997,73 @@ import { Swatches } from 'vue-color'
               valor_memb: 1000,
               fecha: '',
               estado: true,
-              
+              dia_pago: diaPago
              }) 
-             .then((response) => {
-
-              for (var i = 0; i < this.serviciosCarro.length ; i++) {
-                axios.post(config.API_LOCATION + '/user/anexo/', { // POST a anexo 
-                  id_contrato: {id: response.data.id},
+             .then((responseContrato) => {
+              console.log(responseContrato.data)
+              var idContrato = responseContrato.data.id
+              console.log(idContrato)
+              /*
+              axios.post(config.API_LOCATION + '/user/pago/', { // POST a anexo 
+                  id_contrato: {id: responseContrato.data.id},
+                  mes
                   id_servicio: {id: this.serviciosCarro[i].id_servicio.id},
                   fecha_inicio: '',
                   fecha_termino: '',
-                  fecha_termino: '',
-                  
+                  fecha_pago: ''
+                 }) 
+                 .then((responsePago) => {
+
+                 }).catch(e => {
+
+                 })
+              */
+              for (var i = 0; i < this.serviciosCarro.length; i ++) {
+                var id_servicioCarro = this.serviciosCarro[i].id
+                console.log('id_servicio')
+                console.log(id_servicioCarro)
+                console.log('id_contrato')
+                console.log(idContrato)
+                axios.post(config.API_LOCATION + '/user/anexo/', { // POST a anexo 
+                  id_contrato: {id: idContrato},
+                  id_servicio: {id: id_servicioCarro},
+                  fecha_inicio: ''
                  }) 
                  .then((responseAnexo) => {
-                  console.log('entre responseAnexo')
-                  console.log(responseAnexo)
-                  axios.post(config.API_LOCATION + '/user/cupo/', { // POST a configuracion Cliente 
-                    id_anexo: {id: responseAnexo.data.id},
-                    id_d_servicio: {id: this.serviciosCarro[i].id},
-                    lleno: false
-                  }) 
-                  .then((responseCupo) => {
-                    console.log('entre responseCupo')
-                  console.log(responseCupo)
+                  
+                  var id_Anexo = responseAnexo.data.id
+                  console.log(id_servicioCarro)
+                  console.log(id_Anexo)
+                  axios.get(config.API_LOCATION + '/user/d_servicio/' + id_servicioCarro + '/servicio')
+                  .then((responseDServicio) => {
+
+                    for (var e = 0; e < responseDServicio.data.length; e++) {
+                      ////////////////
+                      console.log('entre al for d_servicio')
+                      console.log('' + responseDServicio.data[e].limit_reg + ' === null')
+                      if (responseDServicio.data[e].limit_reg != null) {
+                      axios.post(config.API_LOCATION + '/user/cupo/', { // POST a Cupo 
+                        id_anexo: {id: id_Anexo},
+                        id_d_servicio: {id: responseDServicio.data[e].id},
+                        lleno: false
+                      })
+                      .then((response) => {
+
+                      })
+                      .catch(e => {
+                      })
+                      /////////
+                      }
+                    }
                   })
                   .catch(e => {
                   })
+                 
                   
                  })
                  .catch(e => {
                  })
-               }
+              }
 
              })
              .catch(e => {
@@ -792,13 +1089,14 @@ import { Swatches } from 'vue-color'
               apellido_p: apellido_p,
               apellido_m: apellido_m,
               email: emailFuncionario,
-              fono: fono,
+              fono: fonoFuncionario,
               movil: movil,
               direccion: direccionFuncionario,
-              id_e_cliente: {rut: response.data.rut}
+              id_e_cliente: {rut: response.data.rut},
+              id_ciudad: {id: this.selectCiudadFuncionario}
              }) 
               .then((responseFuncionario) => {
-                 axios.post(config.API_LOCATION + '/user/usuario/', { // POST a configuracion Cliente 
+                 axios.post(config.API_LOCATION + '/user/usuario/', { // POST a usuario 
                     id_funcionario: {rut: responseFuncionario.data.rut},
                     password: password,
                     estado: true,
@@ -815,7 +1113,7 @@ import { Swatches } from 'vue-color'
           .catch(e => {
           })
           
-			},
+      },
 			editarFuncion (e) {
         axios.put(config.API_LOCATION + '/user/funcion/'+ this.editedItem.id +'', this.editedItem) 
           .then((response) => {
@@ -865,7 +1163,7 @@ import { Swatches } from 'vue-color'
         var indexArray = this.servicios.findIndex(x => x.id === item.id)
         console.log(indexArray)
         this.servicios.splice(indexArray, 1)
-        this.totalServicio += item.id_servicio.precio
+        this.totalServicio += item.precio
       },
       quitarCarro (item) {
         console.log(item)
@@ -873,7 +1171,7 @@ import { Swatches } from 'vue-color'
         var indexArray = this.serviciosCarro.findIndex(x => x.id === item.id)
         console.log(indexArray)
         this.serviciosCarro.splice(indexArray, 1)
-        this.totalServicio -= item.id_servicio.precio
+        this.totalServicio -= item.precio
       },
       modalDelete (item) {
         this.deleteItem = item
@@ -891,8 +1189,18 @@ import { Swatches } from 'vue-color'
         this.dialogMantencion = true
       },
 			modalDetalle (item) {
-				this.detailItem = item
-				this.dialogDetail = true
+				this.detailEmpresa = item
+        
+        axios.get(config.API_LOCATION + '/user/conf_e_cliente/' + this.detailEmpresa.id_e_cliente.rut + '/e_cliente')
+          .then((response) => {
+           this.detailConfEmpresa = response.data[0]
+           this.detailConfEmpresa.color_p = 'background-color:' + this.detailConfEmpresa.color_p + ';'
+           this.detailConfEmpresa.color_s = 'background-color:' + this.detailConfEmpresa.color_s + ';'
+          })
+          .catch(e => {
+          })
+         
+				this.dialogdetailContrato = true
 			},
       cerrarModalAgregar () {
         this.dialogAdd = false
@@ -912,3 +1220,13 @@ import { Swatches } from 'vue-color'
 		}
 	}
 </script>
+<style>
+  .colorPrimario {
+    border-style: solid;
+    border-width: 2px;
+    border-color: black;
+    border-radius: 4px;
+    width:50%;
+    height: 50%;
+  }
+</style>

@@ -3,6 +3,9 @@ module.exports = {
   /*
   ** Headers of the page
   */
+  router: {
+    middleware: 'auth'
+  },
   head: {
     title: 'my-project',
     meta: [

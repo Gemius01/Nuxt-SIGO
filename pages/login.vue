@@ -3,6 +3,7 @@
 </template>
 <script>
 export default {
+  middleware: 'noauth',
   layout: 'loginTemplate'
 }
 </script>

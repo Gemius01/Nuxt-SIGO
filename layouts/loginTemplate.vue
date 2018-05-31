@@ -26,27 +26,18 @@
   </v-app>
 </template>
 
-<script>
-  export default {
-    data: () => ({
-      drawer: null
-    }),
-    props: {
-      source: String
-    }
-  }
-</script>
+<!-- :src="require('@/assets/images/fondo.jpg')" -->
 <template>
   <v-app id="inspire">
-    <v-card-media src="https://image.freepik.com/foto-gratis/escritorio-de-madera-con-borrosa-de-sala-de-oficina-interior-con-fondo-de-construccion-de-la-ciudad_3249-1616.jpg" height="730">
+    <v-card-media  :src="require('@/assets/style/ColorSunnyOfficeBackground.png')"  height="100%" width:="100%">
     <v-content>
       <v-container fluid fill-height>
           <v-layout align-center justify-center>
           <v-flex xs12 sm3>
             <v-card class="elevation-12">
-              <v-toolbar color="blue" dark>
-                <v-toolbar-side-icon></v-toolbar-side-icon>
-                  <v-toolbar-title>L O G I N</v-toolbar-title>
+              <v-toolbar color="primary" dark>
+                
+                  <v-toolbar-title style="font-size:16px;">SIGO-ERP</v-toolbar-title>
                     <v-spacer></v-spacer>
             </v-toolbar>
             <v-form @submit.prevent="logearse">
@@ -59,7 +50,10 @@
               <v-card-actions>
                 <v-flex xs12 sm12 md12>
                 <v-spacer></v-spacer>
-                <v-btn block color="blue" dark type="submit">Login</v-btn>
+                <v-btn block color="primary" dark type="submit">Entrar</v-btn>
+                <!--
+                <v-btn block color="blue" dark @click="postLogin">Prueba</v-btn>
+                -->
               </v-flex>
               </v-card-actions>
               </v-form>
@@ -74,7 +68,12 @@
 </template>
 
 <script>
+import axios from 'axios'
+import Cookie from 'js-cookie'
+// Modulo para realizar las peticiones
+  import config from '../config.vue'
   export default {
+   
     data: () => ({
       drawer: null
     }),
@@ -85,11 +84,77 @@
       logearse () {
         var user = document.getElementById('user').value
         var password = document.getElementById('password').value
+
+
+        axios.post(config.API_LOCATION + '/auth', { username: user, password: password}) // petición GET a Tipo para traer a todos los objetos "tipo"
+          .then((response) => {
+            console.log(response)
+            //alert('LOGEADO')
+            //this.setJwtToken(response.data.token)
+            const auth = {
+              accessToken: response.data.token
+            }
+            this.$store.commit('update', auth) // mutating to store for client rendering
+            Cookie.set('auth', auth) // saving token in cookie for server rendering
+            this.$router.push('/')
+            //window.location.replace('http://localhost:3000/')
+            //this.$store.commit('setearToken', '' + response.data.token + '')
+            //var token = this.getJwtToken()
+            //console.log(token)
+            /*
+            window.location.replace('http://localhost:3000/')
+            */
+              /*
+              axios.get(config.API_LOCATION + '/user', { headers: { "Authorization": "Bearer " + token }})
+                .then((response) => {
+                  response.data.authorities
+                })
+                .catch(e => {
+                })
+              */
+          })
+          .catch(e => {
+            
+           alert(e.response.data)
+          })
+
+        /*
         if (user === 'admin' && password === 'admin') {
+
           window.location.replace('http://localhost:3000/')
         } else {
           alert('Clave o Usuario Incorrecto')
         }
+        */
+      },
+      postLogin () {
+      setTimeout(() => {
+        const auth = {
+          accessToken: 'someSddddddddddddddddddddddddddddddddtringGotFromApiServiceWithAjax'
+        }
+        this.$store.commit('update', auth) // mutating to store for client rendering
+        Cookie.set('auth', auth) // saving token in cookie for server rendering
+        this.$router.push('/')
+      }, 1000)
+    },
+      prueba () {
+        
+      },
+      getJwtToken() {
+        var TOKEN_KEY = "jwtToken"
+        //console.log(localStorage.getItem(TOKEN_KEY)) Imprime el Token
+        return localStorage.getItem(TOKEN_KEY)
+        
+      },
+      setJwtToken(token) {
+           var TOKEN_KEY = "jwtToken"
+           //store(TOKEN_KEY, token)
+           //alert('asd')
+          localStorage.setItem(TOKEN_KEY, token)
+      },
+      removeJwtToken() {
+          var TOKEN_KEY = "jwtToken"
+          localStorage.removeItem(TOKEN_KEY)
       }
     }
   }
