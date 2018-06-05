@@ -89,6 +89,8 @@ import Cookie from 'js-cookie'
         axios.post(config.API_LOCATION + '/auth', { username: user, password: password}) // petición GET a Tipo para traer a todos los objetos "tipo"
           .then((response) => {
             console.log(response)
+            console.log('entre')
+
             //alert('LOGEADO')
             //this.setJwtToken(response.data.token)
             const auth = {
@@ -113,10 +115,8 @@ import Cookie from 'js-cookie'
                 })
               */
           })
-          .catch(e => {
-            
-           alert(e.response.data)
-          })
+
+         
 
         /*
         if (user === 'admin' && password === 'admin') {

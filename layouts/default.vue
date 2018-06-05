@@ -96,6 +96,8 @@
 
 <script>
   import Cookie from 'js-cookie'
+  import axios from 'axios'
+  import config from '../config.vue'
   export default {
     data () {
       return {
@@ -104,64 +106,10 @@
         fixed: false,
         items: [
           {
-            action: 'assignment',
-            title: 'Gestión Bodega',
+            action: '',
+            title: '',
             active: false,
-            items: [
-              { title: 'Salida de Insumos', to: '/salidaInsumos' },
-              { title: 'Registrar Categoria', to: '/categoriaInsumo' },
-              { title: 'Registrar Insumo', to: '/insumos' },
-              { title: 'Registrar Subcategoria', to: '/subcategoriaInsumo' }
-            ]
-          },
-          {
-            action: 'content_cut',
-            title: 'Gestión Pañol',
-            active: false,
-            items: [
-              { title: 'Ingresar Herramienta', to: '/herramientas' },
-              { title: 'Registrar Préstamo', to: '/prestamo' },
-              { title: 'Historial Devolución', to: '/devolucion' },
-              { title: 'Registrar Categoria', to: '/categoriaHerramienta' },
-              { title: 'Registrar Subcategoria', to: '/subcategoriaHerramienta' }
-            ]
-          },
-          
-          {
-            action: 'account_circle',
-            title: 'Gestión Administrativa',
-            active: false,
-            items: [
-              // { title: 'Tipo', to: '/tipo' },
-              { title: 'Crear Orden de Compra', to: '/ordenCompra' },
-              { title: 'Ingresar Cotización', to: '/cotizacion' },
-              { title: 'Registrar Compra', to: '/compra' },
-              { title: 'Registros de Recepcion de Compra', to: '/recepcion' },
-              { title: 'Ingresar Tipo Unidad', to: '/tipoUnidad' },
-              { title: 'Ingresar Unidad Medida', to: '/unidad' },
-              { title: 'Ingresar Marca', to: '/marca' },
-              { title: 'Proveedor Nacional', to: '/proveedorN' },
-              { title: 'Proveedor Extranjero', to: '/proveedorE' },
-              { title: 'Registrar Merma', to: '/merma' },
-              { title: 'Empresa Cliente', to: '/e_cliente' },
-              { title: 'Bodega', to: '/bodega' },
-              { title: 'Activos', to: '/stockItems' }
-            ]
-          },
-          {
-            action: 'insert_chart',
-            title: 'Estadísticas',
-            active: false,
-            items: [
-              { title: 'Mayor Solicitante', to: '/reporteMayorSolicitante' },
-              { title: 'Herramienta Stock Crítico', to: '/reporteHerramientaCritico' },
-              { title: 'Insumo Stock Crítico', to: '/reporteInsumoCritico' },
-              { title: 'Insumo Sin Stock', to: '/reporteInsumoSinStock' },
-              { title: 'Herramienta Sin Stock', to: '/reporteHerramientaSinStock' },
-              { title: 'Inventario Herramienta', to: '/reporteInventarioHerramienta' },
-              { title: 'Inventario Insumo', to: '/reporteInventarioInsumo' },
-              { title: 'Herramientas no devueltas', to: '/reporteHerramientaPrestada' },
-            ]
+            items: []
           }
         ],
         miniVariant: false,
@@ -170,7 +118,18 @@
         title: 'ERP ITempus'
       }
     },
+    created () {
+      this.initialize()
+    },
     methods: {
+      initialize () { // Función que recarga los datos de la Tabla mediante request a la API REST
+        axios.get(config.API_LOCATION + '/user/menu/') // petición GET a Tipo para traer a todos los objetos "tipo"
+          .then((response) => {
+          this.items = [response.data]
+          })
+          .catch(e => {
+          })
+      },
       prueba () {
       },
       logOut() {

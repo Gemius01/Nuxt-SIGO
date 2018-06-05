@@ -26,8 +26,18 @@
             	<v-flex xs12>
             		<v-text-field label="Nombre Función" :counter="20" id="nombreFuncion"></v-text-field>
             	</v-flex>
+              <v-select 
+                id='idselectModulo'
+                item-value="id" 
+                item-text="nombre" 
+                :items="modulos"
+                @select='onChangeSelect1' 
+                v-model="selectModulo"
+                search-input autocomplete label="Modulo"
+                single-line
+                ></v-select>
               <v-flex xs12>
-                <v-select label="Nombre Módulo" :items="modulos" v-model="selectModulo" item-id="id" item-text="nombre" id="nombreModulo"></v-select>
+                <v-select label="Nombre Seccion" :items="seccion" v-model="addItem.id_seccion" item-id="id" item-text="nombre" id="nombreSeccion"></v-select>
               </v-flex>
               <v-flex xs12>
                 <v-text-field label="URL" :counter="20" id="url" placeholder="/modulo/ejemplo"></v-text-field>
@@ -258,7 +268,7 @@
       <template slot="items" slot-scope="props">
         <td class="text-xs-center">{{ props.item.id }}</td>
         <td class="text-xs-center">{{ props.item.nombre }}</td>
-        <td class="text-xs-center">{{ props.item.id_modulo.nombre }}</td>
+        <td class="text-xs-center">{{ props.item.id_seccion.id_modulo.nombre }}</td>
         <td class="justify-center layout px-0">
         <v-tooltip top>
           <v-btn icon slot="activator" class="mx-0" @click="modalDetalle(props.item)" >
@@ -312,6 +322,7 @@ import config from '../../config.vue'
 		    ],
       funciones: [],
 			modulos: [],
+      seccion: [],
       tablas: [{tabla_main: 'Funcionario'}],
 			pagination: {},
 			search: '',
@@ -331,6 +342,14 @@ import config from '../../config.vue'
       mode: '',
       timeout: 3000,
       text: 'Se ha agregado con exito',
+        addItem: { // prop temporal que guarda el objeto a editar o eliminar
+          id: 0,
+          nombre: '',
+          id_seccion: {id: 0, nombre: ''},
+          mantencion: false,
+          tabla_main: '',
+          acceso: ''
+        },
 			editedItem: { // prop temporal que guarda el objeto a editar o eliminar
 	        id: 0,
           nombre: '',
@@ -377,6 +396,18 @@ import config from '../../config.vue'
           .catch(e => {
           })
       },
+      onChangeSelect1 (val) {
+         var idmodulo = this.selectModulo
+         axios.get(config.API_LOCATION +  '/user/seccion/' + idmodulo + '/modulo')// petición GET a Categoria para traer a todos los objetos "categoria"que contengan como tipo "insumo"
+          .then((response) => {
+            console.log(response.data)
+            this.seccion = response.data
+            
+
+          })
+          .catch(e => {
+          })
+      },
       cargarModulos () {
         axios.get(config.API_LOCATION + '/user/modulo/') // petición GET a Tipo para traer a todos los objetos "tipo"
           .then((response) => {
@@ -387,12 +418,13 @@ import config from '../../config.vue'
       },
 			agregarFuncion (e) {
         var funcion = e.target.elements.nombreFuncion.value
-        var modulo = this.selectModulo.id
+        var seccion = this.addItem.id_seccion.id
+        console.log(seccion)
         var url = e.target.elements.url.value
         var tablaPrincipal = this.selectTabla.tabla_main
         axios.post(config.API_LOCATION + '/user/funcion/', { 
           nombre: funcion,
-          id_modulo: {id: modulo},
+          id_seccion: {id: seccion},
           tabla_main: tablaPrincipal,
           acceso: url,
           mantencion: false

@@ -108,6 +108,14 @@
             ]
           },
           {
+            action: 'content_cut',
+            title: 'Seccion',
+            active: false,
+            items: [
+              { title: 'Función', to: '/usuario/seccion' }
+            ]
+          },
+          {
             action: 'account_circle',
             title: 'Servicios',
             active: false,
